@@ -1,0 +1,45 @@
+CHECKS = """Beschouw de volgende tekst tussen triple quotes: '''{TEXT}'''
+
+Zijn de volgende zaken bekend of geregeld in het document? Antwoord voor elk van de zaken met ja of nee.
+1 de naam de werkgever;
+2 het adres van de werkgever;
+3 de naam van de werknemer;
+4 het adres van de werknemer;
+5 dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen;
+6 wat de reden voor de beëindiging is;
+7 dat er geen dringende reden voor het ontslag is;
+8 dat het gaat om een beëindiging met wederzijds goedvinden;
+9 wat de datum is waarop de arbeidsovereenkomst eindigt
+10 op welke datum werkgever een eindafrekening maakt;
+11 waar werkgever en werknemer de overeenkomst hebben ondertekend;
+12 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
+13 dat de werknemer 2 weken bedenktijd heeft;
+Antwoord in het volgende formaat:
+1 ja
+2 nee
+3 ja"""
+
+DATA = """Beschouw de volgende tekst tussen triple quotes: '''{text}'''
+
+Extraheer de volgende zaken uit het document. Als een zaak niet aanwezig is, geef dan een lege string terug.
+1 de naam de werkgever;
+2 het adres van de werkgever;
+3 de naam van de werknemer;
+4 het adres van de werknemer;
+5 dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen (ja of nee);
+6 de reden voor de beëindiging;
+7 dat er geen dringende reden voor het ontslag is (ja of nee);
+8 dat het gaat om een beëindiging met wederzijds goedvinden (ja of nee);
+9 de datum waarop de arbeidsovereenkomst eindigt
+10 op welke datum werkgever een eindafrekening maakt;
+11 waar werkgever en werknemer de overeenkomst hebben ondertekend;
+12 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
+13 dat de werknemer 2 weken bedenktijd heeft (ja of nee);
+Antwoord in het volgende formaat:
+1 naam
+2 adres
+3 naam
+4 addres
+5 nee
+6 reden
+etc.."""
