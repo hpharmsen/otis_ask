@@ -4,9 +4,12 @@ import rich
 
 from pdf_reader import read_file
 from gpteasy import GPT, set_prompt_file, get_prompt
+from justdays import Day
 
 RED = '#ff0000'
 GREEN = '#00ff00'
+BLUE = '#99bbff'
+GRAY = '#aaaaaa'
 
 CHECKS = {
     '1': 'Naam werkgever',
@@ -17,12 +20,14 @@ CHECKS = {
     '6': 'Reden beëindiging',
     '7': 'Geen dringende reden voor ontslag',
     '8': 'Beëindiging met wederzijds goedvinden',
-    '9': 'De datum einde arbeidsovereenkomst',
+    '9': 'Datum einde arbeidsovereenkomst',
     '10': 'Datum eindafrekening',
     '11': 'Plaats van ondertekening',
     '12': 'Datum van ondertekening',
-    '13': '2 weken bedenktijd'
+    '13': 'Twee weken bedenktijd',
+    '14': 'Opzegtermijn'
 }
+
 
 def color_print(text, color, end='\n'):
     rich.get_console().print(text, style=color, end=end)
@@ -35,6 +40,51 @@ def get_params():
     return sys.argv[1]
 
 
+def process_response(response):
+    lines = response.split('\n')
+    res = [{}] * (len(CHECKS))
+    for line in lines:
+        try:
+            number, value = line.split(' ', 1)
+        except ValueError:
+            number, value = line, ''
+        if number in CHECKS:
+            if value and value.lower() != 'nee':
+                passed = True
+            else:
+                passed = False
+            res[int(number) - 1] = {'passed': passed, 'value': value}
+    opzegdatum = res[12 - 1]['value']
+    einddatum = res[9 - 1]['value']
+    if opzegdatum and einddatum:
+        termijn = Day(einddatum) - Day(opzegdatum)
+        if termijn > 30:  # !! Deze moet afhankdelijk worden van het arbeidscontract
+            res[14 - 1] = {'passed': True, 'value': f'{termijn} dagen'}
+        else:
+            res[14 - 1] = {'passed': False, 'value': f'{termijn} dagen'}
+    else:
+        res[14 - 1] = {'passed': False, 'value': ''}
+    return res
+
+
+def print_response(data):
+    for i, rec in enumerate(data):
+        passed = rec['passed']
+        value = rec['value']
+        if not value:
+            value = '-'
+        if passed:
+            print("✅", end=" ")
+        else:
+            print("❌", end=" ")
+        color_print(f"{CHECKS[str(i + 1)]}", GRAY, end="")
+        if value and value.lower() not in ('ja', 'nee'):
+            color_print(": ", GRAY, end="")
+            color_print(value, BLUE)
+        else:
+            print()
+
+
 if __name__ == "__main__":
     set_prompt_file("prompts.toml")
     input_file = get_params()
@@ -42,7 +92,9 @@ if __name__ == "__main__":
 
     gpt = GPT()
     gpt.model = "gpt-4-1106-preview"
+    gpt.temperature = 0
 
     prompt = get_prompt('DATA', text=text)
     response = gpt.chat(prompt)
-    process_response(response)
+    data = process_response(response)
+    print_response(data)

@@ -35,6 +35,7 @@ Extraheer de volgende zaken uit het document. Als een zaak niet aanwezig is, gee
 11 waar werkgever en werknemer de overeenkomst hebben ondertekend;
 12 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
 13 dat de werknemer 2 weken bedenktijd heeft (ja of nee);
+Bij 9, 10 en 12 extraheer de datum in het formaat "yyyy-mm-dd". Lukt dat niet, geef dan een lege string terug.
 Antwoord in het volgende formaat:
 1 naam
 2 adres
