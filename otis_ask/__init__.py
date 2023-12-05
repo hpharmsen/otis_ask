@@ -1,2 +1,2 @@
 from .main import analyze_vso
-from .pdf_reader import read_file
+from .pdfreader import read_file

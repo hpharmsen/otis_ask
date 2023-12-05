@@ -3,9 +3,12 @@ import sys
 import rich
 
 try:
-    from pdf_reader import read_file
+    from pdfreader import read_file
 except ImportError:
-    from .pdf_reader import read_file
+    try:
+        from .pdfreader import read_file
+    except ImportError:
+        from otis_ask.pdfreader import read_file
 
 
 from gpteasy import GPT, set_prompt_file, get_prompt
