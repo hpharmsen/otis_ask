@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 import rich
 
@@ -98,7 +99,8 @@ def analyze_vso(vso_text: str):
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
 
-    set_prompt_file("otis_ask/prompts.toml")
+    prompt_file = Path(__file__).parent / "prompts.toml"
+    set_prompt_file(prompt_file)
     prompt = get_prompt('DATA', text=text)
     response = gpt.chat(prompt)
     data = process_response(response)
