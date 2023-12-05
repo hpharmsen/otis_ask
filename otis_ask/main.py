@@ -2,7 +2,12 @@ import sys
 
 import rich
 
-from pdf_reader import read_file
+try:
+    from pdf_reader import read_file
+except ImportError:
+    from .pdf_reader import read_file
+
+
 from gpteasy import GPT, set_prompt_file, get_prompt
 from justdays import Day
 
