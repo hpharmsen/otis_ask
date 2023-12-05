@@ -102,7 +102,7 @@ def analyze_vso(vso_text: str):
     prompt_file = Path(__file__).absolute().parent / "prompts.toml"
     print('>>>>>>>>>>>>>>>>prompt file:', prompt_file)
     set_prompt_file(prompt_file)
-    prompt = get_prompt('DATA', text=text)
+    prompt = get_prompt('DATA', text=vso_text)
     response = gpt.chat(prompt)
     data = process_response(response)
     return data
