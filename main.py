@@ -85,16 +85,20 @@ def print_response(data):
             print()
 
 
-if __name__ == "__main__":
-    set_prompt_file("prompts.toml")
-    input_file = get_params()
-    text = read_file(input_file)
-
+def analyze_vso(vso_text):
     gpt = GPT()
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
 
+    set_prompt_file("prompts.toml")
     prompt = get_prompt('DATA', text=text)
     response = gpt.chat(prompt)
     data = process_response(response)
+    return data
+
+
+if __name__ == "__main__":
+    input_file = get_params()
+    text = read_file(input_file)
+    data = analyze_vso(text)
     print_response(data)
