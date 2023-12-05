@@ -85,7 +85,7 @@ def print_response(data):
             print()
 
 
-def analyze_vso(vso_text):
+def analyze_vso(vso_text: str):
     gpt = GPT()
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
