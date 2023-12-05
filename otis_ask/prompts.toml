@@ -1,4 +1,4 @@
-CHECKS = """Beschouw de volgende tekst tussen triple quotes: '''{TEXT}'''
+CHECKS = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
 
 Zijn de volgende zaken bekend of geregeld in het document? Antwoord voor elk van de zaken met ja of nee.
 1 de naam de werkgever;
@@ -19,7 +19,7 @@ Antwoord in het volgende formaat:
 2 nee
 3 ja"""
 
-DATA = """Beschouw de volgende tekst tussen triple quotes: '''{text}'''
+DATA = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
 
 Extraheer de volgende zaken uit het document. Als een zaak niet aanwezig is, geef dan een lege string terug.
 1 de naam de werkgever;
