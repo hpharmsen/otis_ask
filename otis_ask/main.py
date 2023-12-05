@@ -99,7 +99,8 @@ def analyze_vso(vso_text: str):
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
 
-    prompt_file = Path(__file__).parent / "prompts.toml"
+    prompt_file = (Path(__file__).absolute().parent / "prompts.toml")
+    print('prompt file', prompt_file)
     set_prompt_file(prompt_file)
     prompt = get_prompt('DATA', text=text)
     response = gpt.chat(prompt)
