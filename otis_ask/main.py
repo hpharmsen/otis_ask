@@ -90,7 +90,7 @@ def analyze_vso(vso_text):
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
 
-    set_prompt_file("ask_otis/prompts.toml")
+    set_prompt_file("otis_ask/prompts.toml")
     prompt = get_prompt('DATA', text=text)
     response = gpt.chat(prompt)
     data = process_response(response)

@@ -1,2 +1,2 @@
-include ask_otis/prompts.toml
+include otis_ask/prompts.toml
 include REAME.md

@@ -3,7 +3,7 @@ requires      = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ask_otis"
+name = "otis_ask"
 version = "1.0.0"
 description = "Library to analyse Settlement Agreements and labor contracts"
 readme = "README.md"
@@ -32,4 +32,4 @@ namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
 [tool.setuptools.package-data]
 "*" = ["*.txt"]
-ask_otis = ["prompts.toml"]
+otis_ask = ["prompts.toml"]
