@@ -1,9 +1,12 @@
 import sys
+import io
 
 import cv2
 import numpy as np
-from pdf2image import convert_from_path # first: brew install poppler. For heroku: https://stackoverflow.com/questions/54739063/install-poppler-onto-heroku-server-django
-import pytesseract  # first: brew install tesseract; brew install tesseract-lang; ln /opt/homebrew/Cellar/tesseract/5.3.3/bin/tesseract /usr/local/bin/tesseract
+from pdf2image import convert_from_path, \
+    convert_from_bytes  # first: brew install poppler. For heroku: https://stackoverflow.com/questions/54739063/install-poppler-onto-heroku-server-django
+import \
+    pytesseract  # first: brew install tesseract; brew install tesseract-lang; ln /opt/homebrew/Cellar/tesseract/5.3.3/bin/tesseract /usr/local/bin/tesseract
 from PIL import Image
 from pypdf import PdfReader
 
@@ -26,6 +29,26 @@ def preprocess_image(image):
         # Convert to grayscale
         image_cv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2GRAY)
     return Image.fromarray(image_cv)
+
+
+def read_file_data(file_data, poppler_path=None):
+    # Try to extract text from the PDF using pypdf
+    text = read_pdf_with_pypdf(file_data)
+    if len(text) > 200:
+        return text
+
+    if poppler_path:
+        # Alternatively, OCR the PDF using pdf2image and pytesseract
+        images = convert_from_bytes(file_data, first_page=1, dpi=200, poppler_path=poppler_path)
+        text = ""
+        for image in images:
+            # Preprocess the image
+            image = preprocess_image(image)
+
+            # Perform OCR using pytesseract
+            text += pytesseract.image_to_string(image) + "\n\n"
+
+    return text
 
 
 def read_file(file_path, poppler_path=None):
@@ -52,8 +75,10 @@ def read_file(file_path, poppler_path=None):
     return text
 
 
-def read_pdf_with_pypdf(path):
-    reader = PdfReader(path)
+def read_pdf_with_pypdf(path_or_data):
+    if type(path_or_data) == bytes:
+        path_or_data = io.BytesIO(path_or_data)
+    reader = PdfReader(path_or_data)
     text = ""
     for page in reader.pages:
         text += page.extract_text() + "\n"

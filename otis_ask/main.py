@@ -62,17 +62,17 @@ def process_response(response):
                 passed = True
             else:
                 passed = False
-            res[int(number) - 1] = {'passed': passed, 'value': value}
+            res[int(number) - 1] = {'number':number, 'check':CHECKS[number], 'passed': passed, 'value': value}
     opzegdatum = res[12 - 1]['value']
     einddatum = res[9 - 1]['value']
     if opzegdatum and einddatum:
         termijn = Day(einddatum) - Day(opzegdatum)
         if termijn > 30:  # !! Deze moet afhankdelijk worden van het arbeidscontract
-            res[14 - 1] = {'passed': True, 'value': f'{termijn} dagen'}
+            res[14 - 1] = {'number': '13', 'check':CHECKS['13'], 'passed': True, 'value': f'{termijn} dagen'}
         else:
-            res[14 - 1] = {'passed': False, 'value': f'{termijn} dagen'}
+            res[14 - 1] = {'number': '13', 'check':CHECKS['13'], 'passed': False, 'value': f'{termijn} dagen'}
     else:
-        res[14 - 1] = {'passed': False, 'value': ''}
+        res[14 - 1] = {'number': '13', 'check':CHECKS['13'], 'passed': False, 'value': ''}
     return res
 
 
@@ -100,9 +100,9 @@ def analyze_vso(vso_text: str):
     gpt.temperature = 0
 
     prompt_file = Path(__file__).absolute().parent / "prompts.toml"
-    print('ppppppppppppppppppppppppppprompt file:', prompt_file)
     set_prompt_file(prompt_file)
     prompt = get_prompt('DATA', vso_text=vso_text)
+    print(prompt)
     response = gpt.chat(prompt)
     data = process_response(response)
     return data
