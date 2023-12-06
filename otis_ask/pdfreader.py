@@ -37,16 +37,15 @@ def read_file_data(file_data, poppler_path=None):
     if len(text) > 200:
         return text
 
-    if poppler_path:
-        # Alternatively, OCR the PDF using pdf2image and pytesseract
-        images = convert_from_bytes(file_data, first_page=1, dpi=200, poppler_path=poppler_path)
-        text = ""
-        for image in images:
-            # Preprocess the image
-            image = preprocess_image(image)
+    # Alternatively, OCR the PDF using pdf2image and pytesseract
+    images = convert_from_bytes(file_data, first_page=1, dpi=200, poppler_path=poppler_path)
+    text = ""
+    for image in images:
+        # Preprocess the image
+        image = preprocess_image(image)
 
-            # Perform OCR using pytesseract
-            text += pytesseract.image_to_string(image) + "\n\n"
+        # Perform OCR using pytesseract
+        text += pytesseract.image_to_string(image) + "\n\n"
 
     return text
 

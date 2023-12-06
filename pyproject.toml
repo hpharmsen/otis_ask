@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otis_ask"
-version = "1.2.0"
+version = "1.2.1"
 description = "Library to analyse Settlement Agreements and labor contracts"
 readme = "README.md"
 authors = [{ name = "HP Harmsen", email = "hp@harmsen.nl" }]
