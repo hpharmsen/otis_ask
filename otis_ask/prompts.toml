@@ -1,46 +1,27 @@
-CHECKS = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
-
-Zijn de volgende zaken bekend of geregeld in het document? Antwoord voor elk van de zaken met ja of nee.
-1 de naam de werkgever;
-2 het adres van de werkgever;
-3 de naam van de werknemer;
-4 het adres van de werknemer;
-5 dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen;
-6 wat de reden voor de beëindiging is;
-7 dat er geen dringende reden voor het ontslag is;
-8 dat het gaat om een beëindiging met wederzijds goedvinden;
-9 wat de datum is waarop de arbeidsovereenkomst eindigt
-10 op welke datum werkgever een eindafrekening maakt;
-11 waar werkgever en werknemer de overeenkomst hebben ondertekend;
-12 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
-13 dat de werknemer 2 weken bedenktijd heeft;
-Antwoord in het volgende formaat:
-1 ja
-2 nee
-3 ja"""
-
 DATA = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
 
 Extraheer de volgende zaken uit het document. Als een zaak niet aanwezig is, geef dan een lege string terug.
-1 de naam de werkgever;
-2 het adres van de werkgever;
-3 de naam van de werknemer;
-4 het adres van de werknemer;
-5 dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen (ja of nee);
-6 de reden voor de beëindiging;
+0 de naam de werkgever;
+1 het adres van de werkgever;
+2 de naam van de werknemer;
+3 het adres van de werknemer;
+4 dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen (ja of nee);
+5 de reden voor de beëindiging;
+6 dat werknemer geen verwijt kan worden gemaakt (ja of nee);
 7 dat er geen dringende reden voor het ontslag is (ja of nee);
-8 dat het gaat om een beëindiging met wederzijds goedvinden (ja of nee);
-9 de datum waarop de arbeidsovereenkomst eindigt
-10 op welke datum werkgever een eindafrekening maakt;
-11 waar werkgever en werknemer de overeenkomst hebben ondertekend;
-12 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
-13 dat de werknemer 2 weken bedenktijd heeft (ja of nee);
-Bij 9, 10 en 12 extraheer de datum in het formaat "yyyy-mm-dd". Lukt dat niet, geef dan een lege string terug.
+8 dat er geen opzegverbod van toepassing is (ja of nee);
+9 dat het gaat om een beëindiging met wederzijds goedvinden (ja of nee);
+10 de datum waarop de arbeidsovereenkomst eindigt;
+11 op welke datum werkgever een eindafrekening maakt;
+12 dat de werknemer 2 weken bedenktijd heeft (ja of nee);
+13 waar werkgever en werknemer de overeenkomst hebben ondertekend;
+14 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
+Bij 10, 11 en 14 extraheer de datum in het formaat "yyyy-mm-dd". Lukt dat niet, geef dan een lege string terug.
 Antwoord in het volgende formaat:
-1 naam
-2 adres
-3 naam
-4 addres
-5 nee
-6 reden
+0 naam
+1 adres
+2 naam
+3 addres
+4 nee
+5 reden
 etc.."""
