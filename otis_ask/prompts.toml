@@ -1,27 +1,25 @@
-DATA = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
+ANALYZE_DOC_PROMPT = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
+Extraheer de volgende zaken uit het document.
+Als een zaak niet aanwezig is, geef dan een lege string terug.\n{checks_string}
+Antwoord in het volgende formaat:\n{answer_format}etc.."""
 
-Extraheer de volgende zaken uit het document. Als een zaak niet aanwezig is, geef dan een lege string terug.
-0 de naam de werkgever;
-1 het adres van de werkgever;
-2 de naam van de werknemer;
-3 het adres van de werknemer;
-4 dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen (ja of nee);
-5 de reden voor de beëindiging;
-6 dat werknemer geen verwijt kan worden gemaakt (ja of nee);
-7 dat er geen dringende reden voor het ontslag is (ja of nee);
-8 dat er geen opzegverbod van toepassing is (ja of nee);
-9 dat het gaat om een beëindiging met wederzijds goedvinden (ja of nee);
-10 de datum waarop de arbeidsovereenkomst eindigt;
-11 op welke datum werkgever een eindafrekening maakt;
-12 dat de werknemer 2 weken bedenktijd heeft (ja of nee);
-13 waar werkgever en werknemer de overeenkomst hebben ondertekend;
-14 wanneer werkgever en werknemer de overeenkomst hebben ondertekend;
-Bij 10, 11 en 14 extraheer de datum in het formaat "yyyy-mm-dd". Lukt dat niet, geef dan een lege string terug.
-Antwoord in het volgende formaat:
-0 naam
-1 adres
-2 naam
-3 addres
-4 nee
-5 reden
-etc.."""
+MISSING_DATA = "<p>Vul de volgende gegevens aan:<ul>{missing_data_sentence}</ul></p>"
+
+MISSING_CLAUSES = """<p>Let erop dat de volgende zaken in de Vaststellingsovereenkomst zijn opgenomen:
+<ul>{missing_clauses_sentence}</ul></p>"""
+
+DATES_MISSING = "<p>Om de opzegtermijn te kunnen checken moeten zowel opzegdatum als einddatum zijn ingevuld.</p>"
+
+TERMINATION_TERM_DETAILS = """<p>De opzegtermijn voldoet niet aan de wettelijke eisen.<br/>
+De door de werkgever in acht te nemen termijn van opzegging bedraagt bij een arbeidsovereenkomst die op de dag van opzegging:
+<ol>
+    <li>korter dan vijf jaar heeft geduurd: één maand;</li>
+    <li>vijf jaar of langer, maar korter dan tien jaar heeft geduurd: twee maanden;</li>
+    <li>tien jaar of langer, maar korter dan vijftien jaar heeft geduurd: drie maanden;</li>
+    <li>vijftien jaar of langer heeft geduurd: vier maanden.</li>
+</ol></p>"""
+
+NO_ADVICE = '<p>Deze vaststellingsovereenkomst lijkt helemaal in orde.</p>'
+
+EXTRACT_DATE_FORMAT = """Bij {fields} extraheer de datum in het formaat "yyyy-mm-dd".
+Lukt dat niet, geef dan een lege string terug."""

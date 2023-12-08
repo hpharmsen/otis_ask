@@ -1,0 +1,73 @@
+[TYPE_OVEREENKOMST]
+description = "Het type van de overeenkomst"
+options = ["vaststellingsovereenkomst", "arbeidsovereenkomst", "anders"]
+prompt = "is dit een vaststellingsovereenkomst, arbeidsoverkomst of anders?"
+
+[NAAM_WERKGEVER]
+description = "Naam werkgever"
+prompt = "de naam de werkgever"
+
+[ADRES_WERKGEVER]
+description = "Adres werkgever"
+prompt = "het adres van de werkgever"
+
+[NAAM_WERKNEMER]
+description = "Naam werknemer"
+prompt = "de naam van de werknemer"
+
+[ADRES_WERKNEMER]
+description = "Adres werknemer"
+prompt = "het adres van de werknemer"
+
+[VOORGESTELD]
+options = ["ja", "nee"]
+description = "Werkgever heeft voorgesteld arbeidsovereenkomst te beëindigen"
+prompt = "dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen"
+
+[REDEN]
+description = "Reden beëindiging"
+prompt = "de reden voor de beëindiging"
+
+[GEEN_VERWIJT]
+options = ["ja", "nee"]
+description = "Werknemer kan geen verwijt worden gemaakt"
+prompt = "dat werknemer geen verwijt kan worden gemaakt"
+
+[DRINGENDE_REDEN]
+options = ["ja", "nee"]
+description = "Geen dringende reden voor ontslag"
+prompt = "dat er geen dringende reden voor het ontslag is"
+
+[OPZEGVERBOD]
+options = ["ja", "nee"]
+description = "Geen opzegverbod"
+prompt = "dat er geen opzegverbod van toepassing is"
+
+[WEDERZIJDS_GOEDVINDEN]
+options = ["ja", "nee"]
+description = "Beëindiging met wederzijds goedvinden"
+prompt = "dat het gaat om een beëindiging met wederzijds goedvinden"
+
+[EINDDATUM]
+type = "datum"
+description = "Datum einde arbeidsovereenkomst"
+prompt = "de datum waarop de arbeidsovereenkomst eindigt"
+
+[EINDAFREKENING]
+type = "datum"
+description = "Datum eindafrekening"
+prompt = "op welke datum werkgever een eindafrekening maakt"
+
+[BEDENKTIJD]
+options = ["ja", "nee"]
+description = "Twee weken bedenktijd"
+prompt = "dat de werknemer 2 weken bedenktijd heeft"
+
+[PLAATS_ONDERTEKENING]
+description = "Plaats van ondertekening"
+prompt = "waar werkgever en werknemer de overeenkomst hebben ondertekend"
+
+[DATUM_ONDERTEKENING]
+type = "datum"
+description = "Datum van ondertekening datum"
+prompt = "wanneer werkgever en werknemer de overeenkomst hebben ondertekend"
