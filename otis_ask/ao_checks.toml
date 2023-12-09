@@ -6,50 +6,80 @@
 [NAAM_WERKGEVER]
 description = "Naam werkgever"
 prompt = "de naam de werkgever"
+required = false
 
 [NAAM_WERKNEMER]
 description = "Naam werknemer"
 prompt = "de naam van de werknemer"
+required = false
 
 [FUNCTIE]
 description = "Functie"
 prompt = "de functie van de werknemer"
+required = false
 
 [STARTDATUM]
 type = "datum"
 description = "Datum indiensttreding"
 prompt = "de datum van indiensttreding"
+required = false
+
+[ONBEPAALDE_TIJD]
+options = ["onbepaalde tijd", "tijdelijk contract"]
+description = "Contract voor onbepaalde tijd"
+prompt = "of het contract voor onbepaalde tijd is"
+required = false
 
 [CONTRACTDUUR]
 description = "Contractduur"
 prompt = "de duur van het contract"
+required = false
 
 [PROEFTIJD]
 description = "Proeftijd"
 prompt = "de proeftijd (geef alleen het aantal dagen)"
+required = false
 
 [OPZEGTERMIJN]
 description = "Opzegtermijn"
 prompt = "de opzegtermijn"
+required = false
 
 [SALARIS]
 description = "Salaris"
 prompt = "het salaris"
+required = false
 
 [VAKANTIEDAGEN]
 description = "Vakantiedagen"
 prompt = "het aantal vakantiedagen per jaar (geef alleen het aantal)"
+required = false
+
+[PENSIOENREGELING]
+description = "Pensioenregeling"
+prompt = "of er een pensioenregeling is opgenomen"
+options = ["ja", "nee"]
+required = false
 
 [RELATIEBEDING]
 description = "Relatiebeding"
 prompt = "of er een relatiebeding is opgenomen"
 options = ["ja", "nee"]
+required = false
+
+[CONCURRENTIEBEDING]
+description = "Concurrentiebeding"
+prompt = "of er een concurrentiebeding is opgenomen"
+options = ["ja", "nee"]
+required = false
 
 [PLAATS_ONDERTEKENING]
 description = "Plaats van ondertekening"
 prompt = "waar werkgever en werknemer de overeenkomst hebben ondertekend"
+required = false
 
 [DATUM_ONDERTEKENING]
 type = "datum"
 description = "Datum van ondertekening datum"
 prompt = "wanneer werkgever en werknemer de overeenkomst hebben ondertekend"
+required = false

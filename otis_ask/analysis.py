@@ -97,7 +97,8 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
     extra_checks = Checks()
     extra_advice = ''
 
-    # Check op de opzegtermijn
+    ########## Check op de opzegtermijn ##########
+
     # Opzegdatum is de laatste dag van de maand van ondertekening + 1
     # Opzegtermijn is:
     # 4 maanden als de werknemer 15 jaar of langer in dienst is,
@@ -123,21 +124,52 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
         passed = False
         extra_advice += get_prompt('DATES_MISSING')
 
-    extra_checks.add(Check('OPZEGTERMIJN', 'Opzegtermijn', '', Day, [], passed, opzegtermijn_str))
+    extra_checks.add(Check('OPZEGTERMIJN', 'Opzegtermijn', '', Day, [], True, passed, opzegtermijn_str))
+
+    ########## Check op relatiebeding ##########
+
+    passed = True
+    if ao_checks.get('RELATIEBEDING').value == 'ja':
+        if vso_checks.get('RELATIEBEDING').value != 'nee':
+            passed = False
+            text = 'Niet vervallen'
+            extra_advice += get_prompt('RELATIEBEDING_NIET_VERVALLEN')
+        else:
+            text = 'Vervallen'
+    else:
+        text = 'Geen'
+    extra_checks.add(Check('RELATEBEDING', 'Relatiebeding', '', str, [], True, passed, text))
+
+    ########## Check op concurrentiebeding ##########
+
+    passed = True
+    if ao_checks.get('CONCURRENTIEBEDING').value == 'ja':
+        if vso_checks.get('CONCURRENTIEBEDING').value != 'nee':
+            passed = False
+            text = 'Niet vervallen'
+            extra_advice += get_prompt('CONCURRENTIEBEDING_NIET_VERVALLEN')
+        else:
+            text = 'Vervallen'
+    else:
+        text = 'Geen'
+    extra_checks.add(Check('CONCURRENTIEBEDING', 'Concurrentiebeding', '', str, [], True, passed, text))
+
+    ########## Check op pensioenregeling ##########
+
+    passed = True
+    if ao_checks.get('PENSIOENREGELING').value == 'ja':
+        if vso_checks.get('PENSIOENREGELING').value != 'ja':
+            passed = False
+            extra_advice += get_prompt('PENSIOENREGELING')
+            text = 'Niet voortgezet'
+            extra_advice += get_prompt('PENSIOEN_VOORTZETTEN')
+        else:
+            text = 'Voortgezet'
+    else:
+        text = 'Geen'
+    extra_checks.add(Check('PENSIOENREGELING', 'Voortzetten van pensioenregeling', '', str, [], True, passed, text))
 
     return extra_checks, extra_advice
-
-
-# def parse_date(checks: Checks, id):
-#     """ Checks the indexed number in res and converts it to a date if possible. If not sets the passed flag to False """
-#     for check in checks:
-#         if check.id == id:
-#             try:
-#                 check.value = Day(check.value)
-#             except ValueError:
-#                 check.value = None
-#                 check.passed = False
-#             return check.value
 
 
 def generate_advice(checks: Checks) -> str:

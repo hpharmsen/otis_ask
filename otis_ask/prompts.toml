@@ -29,3 +29,12 @@ NO_ADVICE = '<p>Deze vaststellingsovereenkomst lijkt helemaal in orde.</p>'
 
 EXTRACT_DATE_FORMAT = """Bij {fields} extraheer de datum in het formaat "yyyy-mm-dd".
 Lukt dat niet, geef dan een lege string terug."""
+
+RELATIEBEDING_NIET_VERVALLEN = """<p>In de arbeidsovereenkomst staat een relatiebeding;
+er is in de VSO echter niet overeengekomen dat deze komt te vervallen.</p>"""
+
+CONCURRENTIEBEDING_NIET_VERVALLEN = """<p>In de arbeidsovereenkomst staat een concurrentiebeding;
+er is in de VSO echter niet overeengekomen dat deze komt te vervallen.</p>"""
+
+PENSIOEN_VOORTZETTEN = """<p>In de arbeidsovereenkomst staat dat er een pensioenregeling is getroffen.
+Het is verstandig om in de vaststellingsovereenkomst op te nemen dat deze regeling tot de einddatum wordt nagekomen.</p>"""

@@ -20,15 +20,14 @@ def print_response(document_type, checks: Checks):
         if not value:
             value = '-'
 
-        if check.passed:
+        if not check.required:
+            print("➡️", end=" ")
+        elif check.passed:
             print("✅", end=" ")
         else:
-            if document_type == ('ao'):
-                print("➡️", end=" ")
-            else:
-                print("❌", end=" ")
+            print("❌", end=" ")
         color_print(f"{check.description}", GRAY, end="")
-        if value and (type(value) is not str or value.lower() not in ('ja', 'nee')):
+        if value: # and (type(value) is not str or value.lower() not in ('ja', 'nee')):
             color_print(": ", GRAY, end="")
             color_print(value, BLUE)
         else:

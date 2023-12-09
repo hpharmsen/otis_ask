@@ -12,6 +12,7 @@ class Check:
     prompt: str
     check_type: type
     options: list[str]
+    required: bool = True
     passed: bool = False
     value: str = ""
 
@@ -23,7 +24,7 @@ class Check:
             check_type = 'str'
             value = self.value
         return {'id': self.id, 'description': self.description, 'prompt': self.prompt, 'check_type': check_type,
-                'options': self.options, 'passed': self.passed, 'value': value}
+                'options': self.options, 'required':self.required, 'passed': self.passed, 'value': value}
 
 
 class Checks:
@@ -50,7 +51,8 @@ class Checks:
             prompt = item['prompt']
             check_type = Day if item.get('type') == 'datum' else str
             options = item.get('options', [])
-            self.checks += [Check(id, name, prompt, check_type, options)]
+            required = item.get('required', True)
+            self.checks += [Check(id, name, prompt, check_type, options, required)]
 
         return self.checks
 

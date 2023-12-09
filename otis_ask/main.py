@@ -46,5 +46,6 @@ if __name__ == "__main__":
         print(advice)
         if vso_checks and ao_checks:
             combined_checks, extra_advice = check_vso_with_ao(vso_checks, ao_checks)
+            print('-----')
             print_response("vso", combined_checks)
             print(extra_advice)
