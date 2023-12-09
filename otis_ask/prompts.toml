@@ -1,7 +1,13 @@
-ANALYZE_DOC_PROMPT = """Beschouw de volgende tekst tussen triple quotes: '''{vso_text}'''
-Extraheer de volgende zaken uit het document.
-Als een zaak niet aanwezig is, geef dan een lege string terug.\n{checks_string}
-Antwoord in het volgende formaat:\n{answer_format}etc.."""
+CHECK_DOCUMENT_TYPE = """Beschouw de volgende tekst tussen triple quotes: '''{document_text}'''
+Check het type van het document. Is dit een vaststellingsovereenkomst, een arbeidsovereenkomst, een loonstrook of een ander type?
+Retourneer alleen het type van het document als een string. Geef geen verdere output"""
+
+ANALYZE_DOCUMENT = """Beschouw de volgende tekst tussen triple quotes: '''{document_text}'''
+Extraheer de volgende zaken uit de tekst:
+{checks}
+Als een zaak niet aanwezig is, geef dan een lege string terug.
+Antwoord in het volgende formaat:\n{answer_format}etc..
+Belangrijk! Antwoord alleen in bovenstaand formaat. Geef geen extra informatie terug."""
 
 MISSING_DATA = "<p>Vul de volgende gegevens aan:<ul>{missing_data_sentence}</ul></p>"
 

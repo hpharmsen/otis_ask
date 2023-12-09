@@ -1,7 +1,7 @@
-[TYPE_OVEREENKOMST]
-description = "Het type van de overeenkomst"
-options = ["vaststellingsovereenkomst", "arbeidsovereenkomst", "anders"]
-prompt = "is dit een vaststellingsovereenkomst, arbeidsoverkomst of anders?"
+#[TYPE_OVEREENKOMST]
+#description = "Het type van de overeenkomst"
+#options = ["vaststellingsovereenkomst", "arbeidsovereenkomst", "anders"]
+#prompt = "is dit een vaststellingsovereenkomst, arbeidsoverkomst of anders?"
 
 [NAAM_WERKGEVER]
 description = "Naam werkgever"
@@ -18,6 +18,10 @@ prompt = "de naam van de werknemer"
 [ADRES_WERKNEMER]
 description = "Adres werknemer"
 prompt = "het adres van de werknemer"
+
+[SALARIS]
+description = "Salaris"
+prompt = "het salaris van de werknemer"
 
 [VOORGESTELD]
 options = ["ja", "nee"]

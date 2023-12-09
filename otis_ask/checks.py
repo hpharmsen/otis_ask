@@ -1,5 +1,4 @@
-from dataclasses import dataclass, asdict
-from enum import Enum
+from dataclasses import dataclass
 from pathlib import Path
 import tomllib
 
@@ -28,9 +27,10 @@ class Check:
 
 
 class Checks:
-    def __init__(self):
+    def __init__(self, toml_file_name:str=None):
         self.checks = []
-        self.load()
+        if toml_file_name:
+            self.load(toml_file_name)
 
     def get(self, id):
         for check in self.checks:
@@ -38,8 +38,8 @@ class Checks:
                 return check
         raise ValueError(f"Check with id {id} not found")
 
-    def load(self):
-        checks_file = Path(__file__).parent / "checks.toml"
+    def load(self, toml_file_name:str):
+        checks_file = Path(__file__).parent / toml_file_name
         with open(checks_file, 'rb') as f:
             data = tomllib.load(f)
 

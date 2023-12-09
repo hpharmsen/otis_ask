@@ -1,0 +1,55 @@
+#[TYPE_OVEREENKOMST]
+#description = "Het type van de overeenkomst"
+#options = ["vaststellingsovereenkomst", "arbeidsovereenkomst", "anders"]
+#prompt = "is dit een vaststellingsovereenkomst, arbeidsoverkomst of anders?"
+
+[NAAM_WERKGEVER]
+description = "Naam werkgever"
+prompt = "de naam de werkgever"
+
+[NAAM_WERKNEMER]
+description = "Naam werknemer"
+prompt = "de naam van de werknemer"
+
+[FUNCTIE]
+description = "Functie"
+prompt = "de functie van de werknemer"
+
+[STARTDATUM]
+type = "datum"
+description = "Datum indiensttreding"
+prompt = "de datum van indiensttreding"
+
+[CONTRACTDUUR]
+description = "Contractduur"
+prompt = "de duur van het contract"
+
+[PROEFTIJD]
+description = "Proeftijd"
+prompt = "de proeftijd (geef alleen het aantal dagen)"
+
+[OPZEGTERMIJN]
+description = "Opzegtermijn"
+prompt = "de opzegtermijn"
+
+[SALARIS]
+description = "Salaris"
+prompt = "het salaris"
+
+[VAKANTIEDAGEN]
+description = "Vakantiedagen"
+prompt = "het aantal vakantiedagen per jaar (geef alleen het aantal)"
+
+[RELATIEBEDING]
+description = "Relatiebeding"
+prompt = "of er een relatiebeding is opgenomen"
+options = ["ja", "nee"]
+
+[PLAATS_ONDERTEKENING]
+description = "Plaats van ondertekening"
+prompt = "waar werkgever en werknemer de overeenkomst hebben ondertekend"
+
+[DATUM_ONDERTEKENING]
+type = "datum"
+description = "Datum van ondertekening datum"
+prompt = "wanneer werkgever en werknemer de overeenkomst hebben ondertekend"

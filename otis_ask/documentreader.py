@@ -1,5 +1,6 @@
 import sys
 import io
+import mimetypes
 
 import cv2
 import numpy as np
@@ -51,10 +52,20 @@ def read_file_data(file_data, poppler_path=None):
 
 
 def read_file(file_path, poppler_path=None):
-    if file_path.endswith(".txt"):
-        with open(file_path, 'r') as f:
-            return f.read()
+    mimetype = mimetypes.guess_type(file_path)[0]
 
+    match mimetype:
+        case 'text/plain':
+            with open(file_path, 'r') as f:
+                return f.read()
+
+        case 'application/pdf':
+            return read_pdf(file_path, poppler_path=poppler_path)
+
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            return read_docx(file_path)
+
+def read_pdf(file_path, poppler_path=None):
     # Try to extract text from the PDF using pypdf
     text = read_pdf_with_pypdf(file_path)
     if len(text) > 200:
@@ -83,6 +94,10 @@ def read_pdf_with_pypdf(path_or_data):
         text += page.extract_text() + "\n"
     return text.strip()
 
+
+def read_docx(file_path):
+    import docx2txt
+    return docx2txt.process(file_path)
 
 if __name__ == "__main__":
     poppler_path = '/opt/homebrew/Cellar/poppler/23.12.0/bin'
