@@ -11,6 +11,8 @@ import \
 from PIL import Image
 from pypdf import PdfReader
 
+from s3 import S3 #!!
+
 
 # Function to preprocess an image with OpenCV
 def preprocess_image(image):
@@ -67,7 +69,6 @@ def read_file(file_path, poppler_path=None, mime_type=None):
         case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
             return read_docx(file_path)
 
-
 def read_pdf(file_path, poppler_path=None):
     # Try to extract text from the PDF using pypdf
     text = read_pdf_with_pypdf(file_path)
@@ -81,7 +82,11 @@ def read_pdf(file_path, poppler_path=None):
         for i, image in enumerate(images):
             # Preprocess the image
             image = preprocess_image(image)
-            image.save(f'{i:02d}.png', format='png')
+
+            # !!
+            s3 = S3('harmsen.nl')
+            print(f'{i:02d}.png')
+            s3.add_from_pil_image(image, f'otis/{i:02d}.png')
 
             # Perform OCR using pytesseract
             text += pytesseract.image_to_string(image) + "\n\n"
