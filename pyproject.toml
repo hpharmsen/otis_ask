@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otis_ask"
-version = "1.5.0"
+version = "1.5.1"
 description = "Library to analyse Settlement Agreements and labor contracts"
 readme = "README.md"
 authors = [{ name = "HP Harmsen", email = "hp@harmsen.nl" }]
@@ -14,7 +14,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "openai", "gpteasy", "pytesseract", "pdf2image", "opencv-python", "pypdf", "rich", "justdays", "pillow", "rich", "numpy"
+    "openai", "gpteasy", "pytesseract", "pdf2image", "opencv-python", "pypdf", "rich", "justdays", "pillow", "rich",
+    "numpy", "docx2txt"
 ]
 requires-python = ">=3.11"
 
@@ -32,4 +33,4 @@ namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
 [tool.setuptools.package-data]
 "*" = ["*.txt"]
-otis_ask = ["prompts.toml"]
+otis_ask = ["*.toml"]

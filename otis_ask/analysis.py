@@ -27,12 +27,14 @@ def cached(func):
             return result
     return wrapper
 
+
 @cached
 def doprompt(prompt:str) -> str:
     gpt = GPT()
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
     return gpt.chat(prompt)
+
 
 def analyze_vso(text:str, ao_checks):
     """VSO has been uploaded AO might or might not be present.
