@@ -42,6 +42,7 @@ class Checks:
 
     def load(self, toml_file_name: str):
         checks_file = Path(__file__).parent / toml_file_name
+        print([f for f in Path('/').iterdir()])
         with open(checks_file, 'rb') as f:
             data = tomllib.load(f)
 

@@ -66,6 +66,7 @@ def read_file(file_path, poppler_path=None, mime_type=None):
         case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
             return read_docx(file_path)
 
+
 def read_pdf(file_path, poppler_path=None):
     # Try to extract text from the PDF using pypdf
     text = read_pdf_with_pypdf(file_path)
@@ -99,6 +100,7 @@ def read_pdf_with_pypdf(path_or_data):
 def read_docx(file_path):
     import docx2txt
     return docx2txt.process(file_path)
+
 
 if __name__ == "__main__":
     poppler_path = '/opt/homebrew/Cellar/poppler/23.12.0/bin'
