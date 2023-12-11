@@ -32,24 +32,24 @@ def preprocess_image(image):
     return Image.fromarray(image_cv)
 
 
-def read_file_data(file_data, poppler_path=None):
-    # Try to extract text from the PDF using pypdf
-    text = read_pdf_with_pypdf(file_data)
-    if len(text) > 200:
-        return text
-
-    # Alternatively, OCR the PDF using pdf2image and pytesseract
-    images = convert_from_bytes(file_data, first_page=1, dpi=200, poppler_path=poppler_path)
-    text = ""
-    for i, image in enumerate(images):
-        # Preprocess the image
-        image = preprocess_image(image)
-        image.save(f'{i:02d}.png', format='png')
-
-        # Perform OCR using pytesseract
-        text += pytesseract.image_to_string(image) + "\n\n"
-    print('TEXT FROM OCR', text)
-    return text
+# def read_file_data(file_data, poppler_path=None):
+#     # Try to extract text from the PDF using pypdf
+#     text = read_pdf_with_pypdf(file_data)
+#     if len(text) > 200:
+#         return text
+#
+#     # Alternatively, OCR the PDF using pdf2image and pytesseract
+#     images = convert_from_bytes(file_data, first_page=1, dpi=200, poppler_path=poppler_path)
+#     text = ""
+#     for i, image in enumerate(images):
+#         # Preprocess the image
+#         image = preprocess_image(image)
+#         image.save(f'{i:02d}.png', format='png')
+#
+#         # Perform OCR using pytesseract
+#         text += pytesseract.image_to_string(image) + "\n\n"
+#     print('TEXT FROM OCR', text)
+#     return text
 
 
 def read_file(file_path, poppler_path=None, mime_type=None):
@@ -78,9 +78,10 @@ def read_pdf(file_path, poppler_path=None):
         # Alternatively, OCR the PDF using pdf2image and pytesseract
         images = convert_from_path(file_path, first_page=1, dpi=200, poppler_path=poppler_path)
         text = ""
-        for image in images:
+        for i, image in enumerate(images):
             # Preprocess the image
             image = preprocess_image(image)
+            image.save(f'{i:02d}.png', format='png')
 
             # Perform OCR using pytesseract
             text += pytesseract.image_to_string(image) + "\n\n"

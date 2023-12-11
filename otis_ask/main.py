@@ -1,3 +1,5 @@
+import mimetypes
+import os
 import sys
 
 from otis_ask import analyze_vso, check_document_type, analyze_ao
@@ -20,10 +22,16 @@ def get_params():
     return sys.argv[1:]
 
 
+LOCAL_POPPLER_PATH = '/opt/homebrew/Cellar/poppler/23.12.0/bin'
+
 if __name__ == "__main__":
     vso_checks = ao_checks = None
     for input_file in get_params():
-        text = read_file(input_file)
+        poppler_path = LOCAL_POPPLER_PATH if os.path.isdir(LOCAL_POPPLER_PATH) else None
+        print('POPPLER_PATH', poppler_path)
+        mimetype = mimetypes.guess_type(input_file)[0]
+
+        text = read_file(input_file, mime_type=mimetype, poppler_path=poppler_path)
         document_type = check_document_type(text)
         print()
         print(input_file)
