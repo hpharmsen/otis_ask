@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import tomllib
+import json
 
 from justdays import Day
 
@@ -24,11 +25,11 @@ class Check:
             check_type = 'str'
             value = self.value
         return {'id': self.id, 'description': self.description, 'prompt': self.prompt, 'check_type': check_type,
-                'options': self.options, 'required':self.required, 'passed': self.passed, 'value': value}
+                'options': self.options, 'required': self.required, 'passed': self.passed, 'value': value}
 
 
 class Checks:
-    def __init__(self, toml_file_name:str=None):
+    def __init__(self, toml_file_name: str = None):
         self.checks = []
         if toml_file_name:
             self.load(toml_file_name)
@@ -39,7 +40,7 @@ class Checks:
                 return check
         raise ValueError(f"Check with id {id} not found")
 
-    def load(self, toml_file_name:str):
+    def load(self, toml_file_name: str):
         checks_file = Path(__file__).parent / toml_file_name
         with open(checks_file, 'rb') as f:
             data = tomllib.load(f)
@@ -62,9 +63,23 @@ class Checks:
     def __iter__(self):
         return iter(self.checks)
 
+    def __bool__(self):
+        return len(self.checks) > 0
+
+    def __len__(self):
+        return len(self.checks)
+
     def add(self, check):
         self.checks += [check]
 
     def serializable(self):
         return [check.serializable() for check in self.checks]
 
+    def deserialize(self, json_str):
+        data = json.loads(json_str)
+        self.checks = []
+        for item in data:
+            check = Check(item['id'], item['description'], item['prompt'], item['check_type'], item['options'],
+                          item['required'], item['passed'], item['value'])
+            self.checks += [check]
+        return self.checks

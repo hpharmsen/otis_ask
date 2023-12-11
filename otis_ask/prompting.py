@@ -21,7 +21,7 @@ def create_checks_string(checks: Checks):
     for i, check in enumerate(checks):
         checks_string += f'{i + 1} {check.prompt}'
         if check.options:
-            checks_string += ' (' + str_combine(check.options, 'of') + ')'
+            checks_string += ' (antwoord met ' + str_combine(check.options, 'of') + ')'
         if check.check_type == Day:
             date_checks += [str(i + 1)]
         checks_string += ';\n'

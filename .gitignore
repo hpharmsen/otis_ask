@@ -161,3 +161,4 @@ cython_debug/
 #.idea/
 .envrc
 /input/VSO1.txt
+/gpt_cache.pickle

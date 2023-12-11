@@ -1,10 +1,38 @@
 from pathlib import Path
+import pickle
 
 from gpteasy import get_prompt, GPT, set_prompt_file
 from justdays import Day
 
 from otis_ask.checks import Check, Checks
 from otis_ask.prompting import create_prompt
+
+from functools import wraps
+
+def cached(func):
+    #func.cache = {}
+    try:
+        with open('gpt_cache.pickle', 'rb') as f:
+            func.cache = pickle.load(f)
+    except FileNotFoundError:
+        func.cache = {}
+    @wraps(func)
+    def wrapper(*args):
+        try:
+            return func.cache[args]
+        except KeyError:
+            func.cache[args] = result = func(*args)
+            with open('gpt_cache.pickle', 'wb') as f:
+                pickle.dump(func.cache, f)
+            return result
+    return wrapper
+
+@cached
+def doprompt(prompt:str) -> str:
+    gpt = GPT()
+    gpt.model = "gpt-4-1106-preview"
+    gpt.temperature = 0
+    return gpt.chat(prompt)
 
 def analyze_vso(text:str, ao_checks):
     """VSO has been uploaded AO might or might not be present.
@@ -27,16 +55,15 @@ def check_document_type(document_text: str):
 
     set_prompt_file(Path(__file__).absolute().parent / "prompts.toml")
     prompt = get_prompt('CHECK_DOCUMENT_TYPE', document_text=document_text)
-    print(prompt)
-    response = gpt.chat(prompt)
-    print(response)
+    #response = gpt.chat(prompt)
+    response = doprompt(prompt)
     return response.strip().lower()
 
 
 def analyze_document(document_type:str, document_text: str, vso_checks: Checks, ao_checks: Checks):
-    gpt = GPT()
-    gpt.model = "gpt-4-1106-preview"
-    gpt.temperature = 0
+    # gpt = GPT()
+    # gpt.model = "gpt-4-1106-preview"
+    # gpt.temperature = 0
 
     set_prompt_file(Path(__file__).absolute().parent / "prompts.toml")
     if document_type == 'vso':
@@ -46,17 +73,18 @@ def analyze_document(document_type:str, document_text: str, vso_checks: Checks, 
     else:
         raise ValueError(f"Unknown document type: {document_type}")
     prompt = create_prompt(document_text=document_text, checks=checks)
-    print(prompt)
-    response = gpt.chat(prompt)
-
+    #print(prompt)
+    #response = gpt.chat(prompt)
+    response = doprompt(prompt)
+    #print(response)
     process_response(response, checks) # Fill in value and passed fields in checks
 
-    advice = generate_advice(vso_checks)
-    return checks, advice
+    #!!advice = generate_advice(vso_checks)
+    return checks#!!, advice
 
 
 def process_response(response, checks):
-    print('########\n', response.strip(), '\n########')
+    #print('########\n', response.strip(), '\n########')
     lines = response.strip().split('\n')
     for line in lines:
         if not line.strip():
@@ -173,21 +201,28 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
 
 
 def generate_advice(checks: Checks) -> str:
+    print('GENERATE ADVICE\n---------------')
     if not checks:
+        print("NO")
         return ''  # Happens when only an AO is uploaded
+    print('YES', len(checks))
     # Check for missing data
     res = ''
     missing_data_sentence = ''
     missing_clauses_sentence = ''
     for check in checks:
+        print(check.id, check.passed, check.value)
         if not check.passed:
+            print(f'Check {check.id} failed with options {check.options} and value {check.value}')
             if check.options == ['ja', 'nee']:
-                missing_clauses_sentence += '<li>' + check.description + '</li>'
+                missing_clauses_sentence += f'<li>{check.description}</li>'
             else:
                 missing_data_sentence += f'<li>{check.description}</li>'
     if missing_data_sentence:
+        print('missing data')
         res += get_prompt('MISSING_DATA', missing_data_sentence=missing_data_sentence)
     if missing_clauses_sentence:
+        print('missing clauses')
         res += get_prompt('MISSING_CLAUSES', missing_clauses_sentence=missing_clauses_sentence)
 
     # opzegtermijn_check = checks.get('OPZEGTERMIJN')

@@ -51,10 +51,11 @@ def read_file_data(file_data, poppler_path=None):
     return text
 
 
-def read_file(file_path, poppler_path=None):
-    mimetype = mimetypes.guess_type(file_path)[0]
+def read_file(file_path, poppler_path=None, mime_type=None):
+    if not mime_type:
+        mime_type = mimetypes.guess_type(file_path)[0]
 
-    match mimetype:
+    match mime_type:
         case 'text/plain':
             with open(file_path, 'r') as f:
                 return f.read()
