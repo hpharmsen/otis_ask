@@ -190,7 +190,6 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
     if ao_checks.get('PENSIOENREGELING').value == 'ja':
         if vso_checks.get('PENSIOENREGELING').value != 'ja':
             passed = False
-            extra_advice += get_prompt('PENSIOENREGELING')
             text = 'Niet voortgezet'
             extra_advice += get_prompt('PENSIOEN_VOORTZETTEN')
         else:
