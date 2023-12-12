@@ -75,7 +75,8 @@ def read_pdf(file_path, poppler_path=None):
     if len(text) > 200:
         return text
 
-    if poppler_path:
+    if True or poppler_path: #!!
+        print('yes, poppler_path', poppler_path)
         # Alternatively, OCR the PDF using pdf2image and pytesseract
         images = convert_from_path(file_path, first_page=1, dpi=200, poppler_path=poppler_path)
         text = ""
@@ -90,7 +91,8 @@ def read_pdf(file_path, poppler_path=None):
 
             # Perform OCR using pytesseract
             text += pytesseract.image_to_string(image) + "\n\n"
-
+    else:
+        print('no poplerpath')
     return text
 
 
