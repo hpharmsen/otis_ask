@@ -9,13 +9,14 @@ from otis_ask.prompting import create_prompt
 
 from functools import wraps
 
+
 def cached(func):
-    #func.cache = {}
     try:
         with open('gpt_cache.pickle', 'rb') as f:
             func.cache = pickle.load(f)
     except FileNotFoundError:
         func.cache = {}
+
     @wraps(func)
     def wrapper(*args):
         try:
@@ -29,21 +30,21 @@ def cached(func):
 
 
 @cached
-def doprompt(prompt:str) -> str:
+def doprompt(prompt: str) -> str:
     gpt = GPT()
     gpt.model = "gpt-4-1106-preview"
     gpt.temperature = 0
     return gpt.chat(prompt)
 
 
-def analyze_vso(text:str, ao_checks):
+def analyze_vso(text: str, ao_checks):
     """VSO has been uploaded AO might or might not be present.
     Create new (empty) vso_checks and analyze together with ao_checks"""
     vso_checks = Checks('vso_checks.toml')
     return analyze_document("vso", text, vso_checks, ao_checks)
 
 
-def analyze_ao(text:str, vso_checks):
+def analyze_ao(text: str, vso_checks):
     """AO has been uploaded VSO might or might not be present.
     Create new (empty) ao_checks and analyze together with vso_checks"""
     ao_checks = Checks('ao_checks.toml')
@@ -57,7 +58,6 @@ def check_document_type(document_text: str):
 
     set_prompt_file(Path(__file__).absolute().parent / "prompts.toml")
     prompt = get_prompt('CHECK_DOCUMENT_TYPE', document_text=document_text)
-    #response = gpt.chat(prompt)
     response = doprompt(prompt)
     return response.strip().lower()
 
@@ -75,18 +75,15 @@ def analyze_document(document_type:str, document_text: str, vso_checks: Checks, 
     else:
         raise ValueError(f"Unknown document type: {document_type}")
     prompt = create_prompt(document_text=document_text, checks=checks)
-    #print(prompt)
-    #response = gpt.chat(prompt)
+    print(prompt)
     response = doprompt(prompt)
-    #print(response)
-    process_response(response, checks) # Fill in value and passed fields in checks
+    # print(response)
+    process_response(response, checks)  # Fill in value and passed fields in checks
 
-    #!!advice = generate_advice(vso_checks)
-    return checks#!!, advice
+    return checks
 
 
 def process_response(response, checks):
-    #print('########\n', response.strip(), '\n########')
     lines = response.strip().split('\n')
     for line in lines:
         if not line.strip():
@@ -136,10 +133,16 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
     # 2 maanden als de werknemer 5 jaar of langer in dienst is,
     # 1 maand als de werknemer korter dan 5 jaar in dienst is.
     # Einddatum moet dus minimaal zoveel maanden veder liggen dan de opzegdatum
+    def try_to_make_day_type(value):
+        # When coming back from the frontend, dates are strings
+        try:
+            return Day(value)
+        except:
+            return value
 
-    datum_ondertekening = vso_checks.get('DATUM_ONDERTEKENING').value
-    einddatum = vso_checks.get('EINDDATUM').value
-    startdatum = ao_checks.get('STARTDATUM').value
+    datum_ondertekening = try_to_make_day_type(vso_checks.get('DATUM_ONDERTEKENING').value)
+    einddatum = try_to_make_day_type(vso_checks.get('EINDDATUM').value)
+    startdatum = try_to_make_day_type(ao_checks.get('STARTDATUM').value)
 
     opzegtermijn_str = ''
     if type(datum_ondertekening) == type(einddatum) == type(startdatum) == Day:
@@ -201,39 +204,35 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
     return extra_checks, extra_advice
 
 
-def generate_advice(checks: Checks) -> str:
-    print('GENERATE ADVICE\n---------------')
-    if not checks:
-        print("NO")
+def generate_advice(vso_checks: Checks, combined_checks: Checks, extra_advice: str) -> str:
+    if not vso_checks:
         return ''  # Happens when only an AO is uploaded
-    print('YES', len(checks))
     # Check for missing data
-    res = ''
+    advice = ''
     missing_data_sentence = ''
     missing_clauses_sentence = ''
-    for check in checks:
-        print(check.id, check.passed, check.value)
+    for check in vso_checks:
         if not check.passed:
             print(f'Check {check.id} failed with options {check.options} and value {check.value}')
             if check.options == ['ja', 'nee']:
                 missing_clauses_sentence += f'<li>{check.description}</li>'
             else:
                 missing_data_sentence += f'<li>{check.description}</li>'
+
+    failed_combined_checks_sentence = ''
+    if combined_checks:
+        for check in combined_checks:
+            if not check.passed:
+                print(f'Check {check.id} failed with options {check.options} and value {check.value}')
+                failed_combined_checks_sentence += f'<li>{check.description}</li>'
+
     if missing_data_sentence:
-        print('missing data')
-        res += get_prompt('MISSING_DATA', missing_data_sentence=missing_data_sentence)
+        advice += get_prompt('MISSING_DATA', missing_data_sentence=missing_data_sentence)
     if missing_clauses_sentence:
-        print('missing clauses')
-        res += get_prompt('MISSING_CLAUSES', missing_clauses_sentence=missing_clauses_sentence)
+        advice += get_prompt('MISSING_CLAUSES', missing_clauses_sentence=missing_clauses_sentence)
+    if failed_combined_checks_sentence:
+        advice += get_prompt('FAILED_COMBINED_CHECKS', failed_combined_checks_sentence=extra_advice)
+    if not advice:
+        advice = get_prompt('NO_ADVICE') if combined_checks is None else get_prompt('NO_ADVICE_INC_AO')
 
-    # opzegtermijn_check = checks.get('OPZEGTERMIJN')
-    # opzegdatum_check = checks.get('DATUM_ONDERTEKENING')
-    # einddatum_check = checks.get('EINDDATUM')
-    # if not opzegtermijn_check.passed:
-    #     if not opzegdatum_check.passed or not einddatum_check.passed:
-    #         res += get_prompt('DATES_MISSING')
-    #     res += get_prompt('TERMINATION_TERM_DETAILS')
-
-    if not res:
-        res = get_prompt('NO_ADVICE')
-    return res
+    return advice

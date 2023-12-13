@@ -11,7 +11,7 @@ def create_prompt(document_text: str, checks: Checks):
 
     prompt = get_prompt('ANALYZE_DOCUMENT', document_text=document_text, checks=checks_string,
                         answer_format=answer_format)
-    return prompt
+    return prompt.replace('\\n', '\n')
 
 
 def create_checks_string(checks: Checks):

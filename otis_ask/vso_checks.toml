@@ -25,8 +25,8 @@ prompt = "het salaris van de werknemer"
 
 [VOORGESTELD]
 options = ["ja", "nee"]
-description = "Werkgever heeft voorgesteld arbeidsovereenkomst te beëindigen"
-prompt = "dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen"
+description = "Werkgever heeft voorgesteld arbeidsovereenkomst te beëindigen."
+prompt = "dat werkgever voorgesteld om de arbeidsovereenkomst te beëindigen en dat het initiatief dus echt bij de werkgever ligt."
 
 [REDEN]
 description = "Reden beëindiging"
@@ -45,7 +45,7 @@ prompt = "dat er geen dringende reden voor het ontslag is"
 [OPZEGVERBOD]
 options = ["ja", "nee"]
 description = "Geen opzegverbod"
-prompt = "dat er geen opzegverbod van toepassing is"
+prompt = "dat er geen opzegverbod van toepassing is; antwoord alleen 'ja' als expliciet genoemd wordt dat er geen opzegverbod van toepassing is"
 
 [WEDERZIJDS_GOEDVINDEN]
 options = ["ja", "nee"]
@@ -83,7 +83,7 @@ prompt = "op welke datum werkgever een eindafrekening maakt"
 [BEDENKTIJD]
 options = ["ja", "nee"]
 description = "Twee weken bedenktijd"
-prompt = "dat de werknemer 2 weken bedenktijd heeft"
+prompt = "dat de werknemer twee weken bedenktijd heeft (denk goed na, bekijk eerst zelf of er wel een bedenktijd wordt genoemd en zo ja: welke bedenktijd)"
 
 [PLAATS_ONDERTEKENING]
 description = "Plaats van ondertekening"

@@ -4,14 +4,11 @@ import mimetypes
 
 import cv2
 import numpy as np
-from pdf2image import convert_from_path, \
-    convert_from_bytes  # first: brew install poppler. For heroku: https://stackoverflow.com/questions/54739063/install-poppler-onto-heroku-server-django
+from pdf2image import convert_from_path  # first: brew install poppler. For heroku: https://stackoverflow.com/questions/54739063/install-poppler-onto-heroku-server-django
 import \
     pytesseract  # first: brew install tesseract; brew install tesseract-lang; ln /opt/homebrew/Cellar/tesseract/5.3.3/bin/tesseract /usr/local/bin/tesseract
 from PIL import Image
 from pypdf import PdfReader
-
-#from s3 import S3 #!!
 
 
 # Function to preprocess an image with OpenCV
@@ -34,26 +31,6 @@ def preprocess_image(image):
     return Image.fromarray(image_cv)
 
 
-# def read_file_data(file_data, poppler_path=None):
-#     # Try to extract text from the PDF using pypdf
-#     text = read_pdf_with_pypdf(file_data)
-#     if len(text) > 200:
-#         return text
-#
-#     # Alternatively, OCR the PDF using pdf2image and pytesseract
-#     images = convert_from_bytes(file_data, first_page=1, dpi=200, poppler_path=poppler_path)
-#     text = ""
-#     for i, image in enumerate(images):
-#         # Preprocess the image
-#         image = preprocess_image(image)
-#         image.save(f'{i:02d}.png', format='png')
-#
-#         # Perform OCR using pytesseract
-#         text += pytesseract.image_to_string(image) + "\n\n"
-#     print('TEXT FROM OCR', text)
-#     return text
-
-
 def read_file(file_path, poppler_path=None, mime_type=None):
     if not mime_type:
         mime_type = mimetypes.guess_type(file_path)[0]
@@ -69,30 +46,19 @@ def read_file(file_path, poppler_path=None, mime_type=None):
         case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
             return read_docx(file_path)
 
+
 def read_pdf(file_path, poppler_path=None):
     # Try to extract text from the PDF using pypdf
     text = read_pdf_with_pypdf(file_path)
     if len(text) > 200:
         return text
 
-    if True or poppler_path: #!!
-        print('yes, poppler_path', poppler_path)
-        # Alternatively, OCR the PDF using pdf2image and pytesseract
-        images = convert_from_path(file_path, first_page=1, dpi=200, poppler_path=poppler_path)
-        text = ""
-        for i, image in enumerate(images): #!!
-            # Preprocess the image
-            image = preprocess_image(image)
-
-            # !!
-            # s3 = S3('harmsen.nl')
-            # print(f'{i:02d}.png')
-            # s3.add_from_pil_image(image, f'otis/{i:02d}.png')
-
-            # Perform OCR using pytesseract
-            text += pytesseract.image_to_string(image) + "\n\n"
-    else:
-        print('no poplerpath') #!!
+    # Alternatively, OCR the PDF using pdf2image and pytesseract
+    images = convert_from_path(file_path, first_page=1, dpi=200, poppler_path=poppler_path)
+    text = ""
+    for image in images:
+        image = preprocess_image(image)  # Preprocess the image
+        text += pytesseract.image_to_string(image) + "\n\n"  # Perform OCR using pytesseract
     return text
 
 

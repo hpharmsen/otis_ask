@@ -1,3 +1,5 @@
+# ============= Actual prompts =============
+
 CHECK_DOCUMENT_TYPE = """Beschouw de volgende tekst tussen triple quotes: '''{document_text}'''
 Check het type van het document. Is dit een vaststellingsovereenkomst, een arbeidsovereenkomst, een loonstrook of een ander type?
 Retourneer alleen het type van het document als een string. Geef geen verdere output"""
@@ -9,32 +11,39 @@ Als een zaak niet aanwezig is, geef dan een lege string terug.
 Antwoord in het volgende formaat:\n{answer_format}etc..
 Belangrijk! Antwoord alleen in bovenstaand formaat. Geef geen extra informatie terug."""
 
+EXTRACT_DATE_FORMAT = """Bij {fields} extraheer de datum in het formaat "yyyy-mm-dd".
+Lukt dat niet, geef dan een lege string terug."""
+
+# ============= Texts for the user =============
+
 MISSING_DATA = "<p>Vul de volgende gegevens aan:<ul>{missing_data_sentence}</ul></p>"
 
 MISSING_CLAUSES = """<p>Let erop dat de volgende zaken in de Vaststellingsovereenkomst zijn opgenomen:
 <ul>{missing_clauses_sentence}</ul></p>"""
 
-DATES_MISSING = "<p>Om de opzegtermijn te kunnen checken moeten zowel opzegdatum als einddatum zijn ingevuld.</p>"
+FAILED_COMBINED_CHECKS = """<p>Uit de combinatie van vso en ao:
+<ul>{failed_combined_checks_sentence}</ul></p>"""
 
-TERMINATION_TERM_DETAILS = """<p>De opzegtermijn voldoet niet aan de wettelijke eisen.<br/>
+DATES_MISSING = "<li>Om de opzegtermijn te kunnen checken moeten zowel opzegdatum als einddatum zijn ingevuld.</li>"
+
+TERMINATION_TERM_DETAILS = """<li>De opzegtermijn voldoet niet aan de wettelijke eisen.<br/>
 De door de werkgever in acht te nemen termijn van opzegging bedraagt bij een arbeidsovereenkomst die op de dag van opzegging:
 <ol>
     <li>korter dan vijf jaar heeft geduurd: één maand;</li>
     <li>vijf jaar of langer, maar korter dan tien jaar heeft geduurd: twee maanden;</li>
     <li>tien jaar of langer, maar korter dan vijftien jaar heeft geduurd: drie maanden;</li>
     <li>vijftien jaar of langer heeft geduurd: vier maanden.</li>
-</ol></p>"""
+</ol></li>"""
+
+RELATIEBEDING_NIET_VERVALLEN = """<li>In de arbeidsovereenkomst staat een relatiebeding;
+er is in de VSO echter niet overeengekomen dat deze komt te vervallen.</li>"""
+
+CONCURRENTIEBEDING_NIET_VERVALLEN = """<li>In de arbeidsovereenkomst staat een concurrentiebeding;
+er is in de VSO echter niet overeengekomen dat deze komt te vervallen.</li>"""
+
+PENSIOEN_VOORTZETTEN = """<li>In de arbeidsovereenkomst staat dat er een pensioenregeling is getroffen.
+Het is verstandig om in de vaststellingsovereenkomst op te nemen dat deze regeling tot de einddatum wordt nagekomen.</li>"""
 
 NO_ADVICE = '<p>Deze vaststellingsovereenkomst lijkt helemaal in orde.</p>'
 
-EXTRACT_DATE_FORMAT = """Bij {fields} extraheer de datum in het formaat "yyyy-mm-dd".
-Lukt dat niet, geef dan een lege string terug."""
-
-RELATIEBEDING_NIET_VERVALLEN = """<p>In de arbeidsovereenkomst staat een relatiebeding;
-er is in de VSO echter niet overeengekomen dat deze komt te vervallen.</p>"""
-
-CONCURRENTIEBEDING_NIET_VERVALLEN = """<p>In de arbeidsovereenkomst staat een concurrentiebeding;
-er is in de VSO echter niet overeengekomen dat deze komt te vervallen.</p>"""
-
-PENSIOEN_VOORTZETTEN = """<p>In de arbeidsovereenkomst staat dat er een pensioenregeling is getroffen.
-Het is verstandig om in de vaststellingsovereenkomst op te nemen dat deze regeling tot de einddatum wordt nagekomen.</p>"""
+NO_ADVICE_INC_AO = '<p>Deze vaststellingsovereenkomst in combinatie arbeidsovereenkomst lijkt helemaal in orde.</p>'
