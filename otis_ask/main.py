@@ -50,10 +50,11 @@ if __name__ == "__main__":
 
         print_response("vso", vso_checks)
         print_response("ao", ao_checks)
-        advice = generate_advice(vso_checks)
-        print(advice)
+        combined_checks = None
+        extra_advice = ''
         if vso_checks and ao_checks:
             combined_checks, extra_advice = check_vso_with_ao(vso_checks, ao_checks)
             print('-----')
             print_response("vso", combined_checks)
-            print(extra_advice)
+        advice = generate_advice(vso_checks, combined_checks, extra_advice)
+        print(advice)
