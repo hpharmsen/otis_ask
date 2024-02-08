@@ -1,13 +1,15 @@
 from pathlib import Path
 import pickle
 
-from gpteasy import get_prompt, GPT, set_prompt_file
+from justai import Agent, get_prompt, set_prompt_file
 from justdays import Day
 
 from otis_ask.checks import Check, Checks
 from otis_ask.prompting import create_prompt
 
 from functools import wraps
+
+MODEL = 'gpt-4-turbo-preview'
 
 
 def cached(func):
@@ -31,8 +33,7 @@ def cached(func):
 
 @cached
 def doprompt(prompt: str) -> str:
-    gpt = GPT()
-    gpt.model = "gpt-4-1106-preview"
+    gpt = Agent(MODEL)
     gpt.temperature = 0
     return gpt.chat(prompt)
 
@@ -52,9 +53,8 @@ def analyze_ao(text: str, vso_checks):
 
 
 def check_document_type(document_text: str):
-    gpt = GPT()
-    gpt.model = "gpt-4-1106-preview"
-    gpt.temperature = 0
+    agent = Agent(MODEL)
+    agent.temperature = 0
 
     set_prompt_file(Path(__file__).absolute().parent / "prompts.toml")
     prompt = get_prompt('CHECK_DOCUMENT_TYPE', document_text=document_text)
@@ -62,7 +62,7 @@ def check_document_type(document_text: str):
     return response.strip().lower()
 
 
-def analyze_document(document_type:str, document_text: str, vso_checks: Checks, ao_checks: Checks):
+def analyze_document(document_type: str, document_text: str, vso_checks: Checks, ao_checks: Checks):
     # gpt = GPT()
     # gpt.model = "gpt-4-1106-preview"
     # gpt.temperature = 0
