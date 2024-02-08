@@ -1,4 +1,4 @@
-from gpteasy import get_prompt
+from justai import get_prompt
 from justdays import Day
 
 from otis_ask.checks import Checks
