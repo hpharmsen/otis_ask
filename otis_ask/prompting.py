@@ -1,4 +1,4 @@
-from justai import get_prompt2
+from justai import get_prompt
 from justdays import Day
 
 from otis_ask.checks import Checks
@@ -9,7 +9,7 @@ def create_prompt(document_text: str, checks: Checks):
     checks_string = create_checks_string(checks)
     answer_format = create_answer_format(checks)
 
-    prompt = get_prompt2('ANALYZE_DOCUMENT', document_text=document_text, checks=checks_string,
+    prompt = get_prompt('ANALYZE_DOCUMENT', document_text=document_text, checks=checks_string,
                         answer_format=answer_format)
     return prompt.replace('\\n', '\n')
 
@@ -26,7 +26,7 @@ def create_checks_string(checks: Checks):
             date_checks += [str(i + 1)]
         checks_string += ';\n'
     if date_checks:
-        checks_string += get_prompt2('EXTRACT_DATE_FORMAT', fields=str_combine(date_checks, "en"))
+        checks_string += get_prompt('EXTRACT_DATE_FORMAT', fields=str_combine(date_checks, "en"))
     return checks_string
 
 
