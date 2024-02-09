@@ -26,7 +26,7 @@ def create_checks_string(checks: Checks):
             date_checks += [str(i + 1)]
         checks_string += ';\n'
     if date_checks:
-        checks_string += get_prompt('EXTRACT_DATE_FORMAT', fields=str_combine(date_checks, "en"))
+        checks_string += get_prompt2('EXTRACT_DATE_FORMAT', fields=str_combine(date_checks, "en"))
     return checks_string
 
 
