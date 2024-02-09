@@ -9,7 +9,9 @@ Extraheer de volgende zaken uit de tekst:
 {checks}
 Als een zaak niet aanwezig is, geef dan een lege string terug.
 Antwoord in het volgende formaat:\n{answer_format}etc..
-Belangrijk! Antwoord alleen in bovenstaand formaat. Geef geen extra informatie terug."""
+Belangrijk! Antwoord alleen in bovenstaand formaat. Vergeet niet de nummers voor elk antwoord.
+Geef geen extra informatie terug.
+Haal diep adem, en denk goed na. Dit is belangrijk"""
 
 EXTRACT_DATE_FORMAT = """Bij {fields} extraheer de datum in het formaat "yyyy-mm-dd".
 Lukt dat niet, geef dan een lege string terug."""
