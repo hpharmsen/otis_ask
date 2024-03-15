@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import tomllib
 import json
+from typing import TypeAlias
 
 from justdays import Day
 
@@ -34,9 +35,9 @@ class Checks:
         if toml_file_name:
             self.load(toml_file_name)
 
-    def get(self, id):
+    def get(self, check_id):
         for check in self.checks:
-            if check.id == id:
+            if check.id == check_id:
                 return check
         raise ValueError(f"Check with id {id} not found")
 
@@ -48,13 +49,13 @@ class Checks:
 
         self.checks = []
 
-        for id, item in data.items():
+        for check_id, item in data.items():
             name = item['description']
             prompt = item['prompt']
             check_type = Day if item.get('type') == 'datum' else str
             options = item.get('options', [])
             required = item.get('required', True)
-            self.checks += [Check(id, name, prompt, check_type, options, required)]
+            self.checks += [Check(check_id, name, prompt, check_type, options, required)]
 
         return self.checks
 
@@ -84,3 +85,7 @@ class Checks:
                           item['required'], item['passed'], item['value'])
             self.checks += [check]
         return self.checks
+
+
+# For type hints
+ChecksDict: TypeAlias = dict[str, Checks]

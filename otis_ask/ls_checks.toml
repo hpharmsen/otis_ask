@@ -1,0 +1,38 @@
+[NAAM_WERKGEVER]
+description = "Naam werkgever"
+prompt = "de naam de werkgever"
+required = false
+
+[NAAM_WERKNEMER]
+description = "Naam werknemer"
+prompt = "de naam van de werknemer"
+required = false
+
+[SALARIS_PERIODE]
+description = "Salarisperiode"
+prompt = "De maand het het jaar van de salarisperiode van deze loonstrook"
+required = false
+
+[STARTDATUM]
+type = "datum"
+description = "Datum indiensttreding"
+prompt = "de datum van indiensttreding"
+required = false
+
+[BRUTO_MAANDSALARIS]
+type= "getal"
+description = "Bruto maandsalaris"
+prompt = "het bruto maandsalaris"
+required = false
+
+[GEBOORTEDATUM]
+type = "datum"
+description = "Geboortedatum"
+prompt = "de geboortedatum"
+required = false
+
+[PARTTIME_PERCENTAGE]
+type = "getal"
+description = "Parttime percentage"
+prompt = "het parttime percentage als een geheel getal"
+required = false

@@ -12,7 +12,7 @@ def color_print(text, color, end='\n'):
     rich.get_console().print(text, style=color, end=end)
 
 
-def print_response(document_type, checks: Checks):
+def print_response(checks: Checks):
     if not checks:
         return
     for check in checks:
@@ -27,7 +27,7 @@ def print_response(document_type, checks: Checks):
         else:
             print("❌", end=" ")
         color_print(f"{check.description}", GRAY, end="")
-        if value: # and (type(value) is not str or value.lower() not in ('ja', 'nee')):
+        if value:
             color_print(": ", GRAY, end="")
             color_print(value, BLUE)
         else:

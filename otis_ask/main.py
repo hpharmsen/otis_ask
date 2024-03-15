@@ -3,7 +3,8 @@ import os
 import sys
 
 from otis_ask import analyze_vso, check_document_type, analyze_ao
-from otis_ask.analysis import check_vso_with_ao, generate_advice
+from otis_ask.analysis import check_vso_with_ao, generate_advice, analyze_ls
+from otis_ask.checks import Checks
 from otis_ask.output import color_print, print_response
 
 try:
@@ -25,7 +26,7 @@ def get_params():
 LOCAL_POPPLER_PATH = '/opt/homebrew/Cellar/poppler/23.12.0/bin'
 
 if __name__ == "__main__":
-    vso_checks = ao_checks = None
+    checks = {'vso': Checks(), 'ao': Checks(), 'ls': Checks()}
     for input_file in get_params():
         poppler_path = LOCAL_POPPLER_PATH if os.path.isdir(LOCAL_POPPLER_PATH) else None
         print('POPPLER_PATH', poppler_path)
@@ -40,21 +41,25 @@ if __name__ == "__main__":
         match document_type:
             case 'vaststellingsovereenkomst':
                 vso_text = text
-                vso_checks = analyze_vso(text, ao_checks)
+                analyze_vso(text, checks)
             case 'arbeidsovereenkomst':
                 ao_text = text
-                ao_checks = analyze_ao(text, vso_checks)
+                analyze_ao(text, checks)
+            case 'loonstrook':
+                ls_text = text
+                analyze_ls(text, checks)
             case _:
                 print(f'Document type {document_type} not recognized')
                 sys.exit()
 
-        print_response("vso", vso_checks)
-        print_response("ao", ao_checks)
-        combined_checks = None
+        print_response(checks['vso'])
+        print_response(checks['ao'])
+        print_response(checks['ls'])
+        combined_checks = Checks()
         extra_advice = ''
-        if vso_checks and ao_checks:
-            combined_checks, extra_advice = check_vso_with_ao(vso_checks, ao_checks)
+        if checks.get('vso') and checks.get('ao'):
+            extra_advice = check_vso_with_ao(checks)
             print('-----')
-            print_response("vso", combined_checks)
-        advice = generate_advice(vso_checks, combined_checks, extra_advice)
+            print_response(combined_checks)
+        advice = generate_advice(checks, extra_advice)
         print(advice)

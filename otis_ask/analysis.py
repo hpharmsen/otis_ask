@@ -4,7 +4,7 @@ import pickle
 from justai import Agent, get_prompt, set_prompt_file
 from justdays import Day
 
-from otis_ask.checks import Check, Checks
+from otis_ask.checks import Check, Checks, ChecksDict
 from otis_ask.prompting import create_prompt
 
 from functools import wraps
@@ -25,8 +25,8 @@ def cached(func):
             return func.cache[args]
         except KeyError:
             func.cache[args] = result = func(*args)
-            with open('gpt_cache.pickle', 'wb') as f:
-                pickle.dump(func.cache, f)
+            with open('gpt_cache.pickle', 'wb') as outf:
+                pickle.dump(func.cache, outf)
             return result
     return wrapper
 
@@ -38,21 +38,28 @@ def doprompt(prompt: str) -> str:
     return gpt.chat(prompt)
 
 
-def analyze_vso(text: str, ao_checks):
+def analyze_vso(text: str, checks):
     """VSO has been uploaded AO might or might not be present.
     Create new (empty) vso_checks and analyze together with ao_checks"""
-    vso_checks = Checks('vso_checks.toml')
-    return analyze_document("vso", text, vso_checks, ao_checks)
+    checks['vso'] = Checks('vso_checks.toml')
+    analyze_document("vso", text, checks)
 
 
-def analyze_ao(text: str, vso_checks):
+def analyze_ao(text: str, checks):
     """AO has been uploaded VSO might or might not be present.
     Create new (empty) ao_checks and analyze together with vso_checks"""
-    ao_checks = Checks('ao_checks.toml')
-    return analyze_document("ao", text, vso_checks, ao_checks)
+    checks['ao'] = Checks('ao_checks.toml')
+    analyze_document("ao", text, checks)
 
 
-def check_document_type(document_text: str):
+def analyze_ls(text: str, checks: ChecksDict):
+    """LS has been uploaded
+    Create new (empty) ls_checks and analyze"""
+    checks['ls'] = Checks('ls_checks.toml')
+    analyze_document("ls", text, checks)
+
+
+def check_document_type(document_text: str) -> str:
     agent = Agent(MODEL)
     agent.temperature = 0
 
@@ -62,28 +69,19 @@ def check_document_type(document_text: str):
     return response.strip().lower()
 
 
-def analyze_document(document_type: str, document_text: str, vso_checks: Checks, ao_checks: Checks):
-    # gpt = GPT()
-    # gpt.model = "gpt-4-1106-preview"
-    # gpt.temperature = 0
-
+def analyze_document(document_type: str, document_text: str, checks: ChecksDict):
     set_prompt_file(Path(__file__).absolute().parent / "prompts.toml")
-    if document_type == 'vso':
-        checks = vso_checks
-    elif document_type == 'ao':
-        checks = ao_checks
-    else:
+    current_checks = checks.get(document_type, 'unknown')
+    if current_checks == 'unknown':
         raise ValueError(f"Unknown document type: {document_type}")
-    prompt = create_prompt(document_text=document_text, checks=checks)
+
+    prompt = create_prompt(document_text=document_text, checks=current_checks)
     print(prompt)
     response = doprompt(prompt)
-    # print(response)
-    process_response(response, checks)  # Fill in value and passed fields in checks
-
-    return checks
+    process_response(response, current_checks)  # Fill in value and passed fields in checks
 
 
-def process_response(response, checks):
+def process_response(response: str, checks: Checks) -> Checks:
     lines = response.strip().split('\n')
     for line in lines:
         if not line.strip():
@@ -115,16 +113,15 @@ def process_response(response, checks):
                     pass
             else:
                 raise ValueError(f"Unknown check type: {check.check_type}")
-
     return checks
 
 
-def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, str]:
+def check_vso_with_ao(checks: ChecksDict) -> str:
 
+    vso_checks = checks['vso']
+    ao_checks = checks['ao']
     extra_checks = Checks()
     extra_advice = ''
-
-    ########## Check op de opzegtermijn ##########
 
     # Opzegdatum is de laatste dag van de maand van ondertekening + 1
     # Opzegtermijn is:
@@ -137,7 +134,7 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
         # When coming back from the frontend, dates are strings
         try:
             return Day(value)
-        except:
+        except TypeError:
             return value
 
     datum_ondertekening = try_to_make_day_type(vso_checks.get('DATUM_ONDERTEKENING').value)
@@ -145,7 +142,7 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
     startdatum = try_to_make_day_type(ao_checks.get('STARTDATUM').value)
 
     opzegtermijn_str = ''
-    if type(datum_ondertekening) == type(einddatum) == type(startdatum) == Day:
+    if type(datum_ondertekening) is type(einddatum) is type(startdatum) is Day:
         opzegdatum = datum_ondertekening.last_day_of_month() + 1
         years = (einddatum - startdatum) / 365.25
         opzegtermijn = 4 if years > 15 else 3 if years > 10 else 2 if years > 5 else 1
@@ -159,7 +156,7 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
 
     extra_checks.add(Check('OPZEGTERMIJN', 'Opzegtermijn', '', Day, [], True, passed, opzegtermijn_str))
 
-    ########## Check op relatiebeding ##########
+    # ######### Check op relatiebeding ##########
 
     passed = True
     if ao_checks.get('RELATIEBEDING').value == 'ja':
@@ -173,7 +170,7 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
         text = 'Geen'
     extra_checks.add(Check('RELATEBEDING', 'Relatiebeding', '', str, [], True, passed, text))
 
-    ########## Check op concurrentiebeding ##########
+    # ######### Check op concurrentiebeding ##########
 
     passed = True
     if ao_checks.get('CONCURRENTIEBEDING').value == 'ja':
@@ -187,7 +184,7 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
         text = 'Geen'
     extra_checks.add(Check('CONCURRENTIEBEDING', 'Concurrentiebeding', '', str, [], True, passed, text))
 
-    ########## Check op pensioenregeling ##########
+    # ######### Check op pensioenregeling ##########
 
     passed = True
     if ao_checks.get('PENSIOENREGELING').value == 'ja':
@@ -201,17 +198,18 @@ def check_vso_with_ao(vso_checks: Checks, ao_checks: Checks) -> tuple[Checks, st
         text = 'Geen'
     extra_checks.add(Check('PENSIOENREGELING', 'Voortzetten van pensioenregeling', '', str, [], True, passed, text))
 
-    return extra_checks, extra_advice
+    checks['combined'] = extra_checks
+    return extra_advice
 
 
-def generate_advice(vso_checks: Checks, combined_checks: Checks, extra_advice: str) -> str:
-    if not vso_checks:
+def generate_advice(checks: ChecksDict, extra_advice: str) -> str:
+    if not checks.get('vso'):
         return ''  # Happens when only an AO is uploaded
     # Check for missing data
     advice = ''
     missing_data_sentence = ''
     missing_clauses_sentence = ''
-    for check in vso_checks:
+    for check in checks['vso']:
         if not check.passed:
             print(f'Check {check.id} failed with options {check.options} and value {check.value}')
             if check.options == ['ja', 'nee']:
@@ -220,8 +218,8 @@ def generate_advice(vso_checks: Checks, combined_checks: Checks, extra_advice: s
                 missing_data_sentence += f'<li>{check.description}</li>'
 
     failed_combined_checks_sentence = ''
-    if combined_checks:
-        for check in combined_checks:
+    if checks.get('combined'):
+        for check in checks['combined']:
             if not check.passed:
                 print(f'Check {check.id} failed with options {check.options} and value {check.value}')
                 failed_combined_checks_sentence += f'<li>{check.description}</li>'
@@ -233,6 +231,6 @@ def generate_advice(vso_checks: Checks, combined_checks: Checks, extra_advice: s
     if failed_combined_checks_sentence:
         advice += get_prompt('FAILED_COMBINED_CHECKS', failed_combined_checks_sentence=extra_advice)
     if not advice:
-        advice = get_prompt('NO_ADVICE') if combined_checks is None else get_prompt('NO_ADVICE_INC_AO')
+        advice = get_prompt('NO_ADVICE') if not checks.get('combined') else get_prompt('NO_ADVICE_INC_AO')
 
     return advice
