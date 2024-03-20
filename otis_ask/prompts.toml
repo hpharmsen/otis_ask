@@ -15,6 +15,8 @@ Haal diep adem, en denk goed na. Dit is belangrijk"""
 
 EXTRACT_DATE_FORMAT = """Bij {fields} extraheer de datum in het formaat "yyyy-mm-dd".
 Lukt dat niet, geef dan een lege string terug."""
+EXTRACT_FLOAT_FORMAT = """Bij {fields} extraheer een floating point getal met een komma als digitale scheider."""
+EXTRACT_INT_FORMAT = """Bij {fields} extraheer een geheel getal."""
 
 # ============= Texts for the user =============
 

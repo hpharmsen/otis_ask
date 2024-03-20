@@ -22,6 +22,12 @@ class Check:
         if self.check_type == Day:
             check_type = 'date'
             value = str(self.value)
+        elif self.check_type == float:
+            check_type = 'float'
+            value = self.value
+        elif self.check_type == int:
+            check_type = 'int'
+            value = self.value
         else:
             check_type = 'str'
             value = self.value
@@ -39,7 +45,7 @@ class Checks:
         for check in self.checks:
             if check.id == check_id:
                 return check
-        raise ValueError(f"Check with id {id} not found")
+        raise ValueError(f"Check with id {check_id} not found")
 
     def load(self, toml_file_name: str):
         checks_file = Path(__file__).parent / toml_file_name
@@ -52,7 +58,15 @@ class Checks:
         for check_id, item in data.items():
             name = item['description']
             prompt = item['prompt']
-            check_type = Day if item.get('type') == 'datum' else str
+            match item.get('type'):
+                case 'day':
+                    check_type = Day
+                case 'float':
+                    check_type = float
+                case 'int':
+                    check_type = int
+                case _:
+                    check_type = str
             options = item.get('options', [])
             required = item.get('required', True)
             self.checks += [Check(check_id, name, prompt, check_type, options, required)]

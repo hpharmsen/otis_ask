@@ -17,6 +17,8 @@ def create_prompt(document_text: str, checks: Checks):
 def create_checks_string(checks: Checks):
     """ Convert a list of checks to a text that can be used in the prompt """
     date_checks = []
+    float_checks = []
+    int_checks = []
     checks_string = ''
     for i, check in enumerate(checks):
         checks_string += f'{i + 1} {check.prompt}'
@@ -24,9 +26,17 @@ def create_checks_string(checks: Checks):
             checks_string += ' (antwoord met ' + str_combine(check.options, 'of') + ')'
         if check.check_type == Day:
             date_checks += [str(i + 1)]
+        elif check.check_type == int:
+            int_checks += [str(i + 1)]
+        elif check.check_type == float:
+            float_checks += [str(i + 1)]
         checks_string += ';\n'
     if date_checks:
         checks_string += get_prompt('EXTRACT_DATE_FORMAT', fields=str_combine(date_checks, "en"))
+    if int_checks:
+        checks_string += get_prompt('EXTRACT_INT_FORMAT', fields=str_combine(int_checks, "en"))
+    if date_checks:
+        checks_string += get_prompt('EXTRACT_FLOAT_FORMAT', fields=str_combine(float_checks, "en"))
     return checks_string
 
 

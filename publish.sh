@@ -4,4 +4,4 @@ git commit -v -a -m "publish `date`"
 git tag -a $VERSION -m "version $VERSION"
 git push origin $VERSION
 echo "run:"
-echo "pip install git+https://github.com/hpharmsen/otis_ask@$VERSION"
+echo "python -m pip install  otis_ask@git+https://github.com/hpharmsen/otis_ask.git@$VERSION"

@@ -111,6 +111,18 @@ def process_response(response: str, checks: Checks) -> Checks:
                     check.passed = True
                 except ValueError:
                     pass
+            elif check.check_type == int:
+                try:
+                    check.value = int(value)
+                    check.passed = True
+                except ValueError:
+                    pass
+            elif check.check_type == float:
+                try:
+                    check.value = float(value.replace(',', '.'))
+                    check.passed = True
+                except ValueError:
+                    pass
             else:
                 raise ValueError(f"Unknown check type: {check.check_type}")
     return checks
@@ -234,3 +246,60 @@ def generate_advice(checks: ChecksDict, extra_advice: str) -> str:
         advice = get_prompt('NO_ADVICE') if not checks.get('combined') else get_prompt('NO_ADVICE_INC_AO')
 
     return advice
+
+
+def calculate_transitievergoeding(checks: ChecksDict) -> str:
+    ao_checks = checks['ao']
+    ls_checks = checks['ls']
+    vso_checks = checks['vso']
+    if not vso_checks:
+        return ''
+    if not ao_checks and not ls_checks:
+        return 'Upload de arbeidsovereenkomst en laatste volledige loonstrook om de transitievergoeding te berekenen.'
+    if not ao_checks:
+        return 'Upload de arbeidsovereenkomst om de transitievergoeding te berekenen.'
+    if not ls_checks:
+        return 'Upload de laatste volledige loonstrook om de transitievergoeding te berekenen.'
+    startdatum = ls_checks.get('STARTDATUM').value
+    if vso_checks.get('STARTDATUM').value and vso_checks.get('STARTDATUM').value < startdatum:
+        startdatum = vso_checks.get('STARTDATUM').value
+    if not startdatum:
+        return 'Transitievergoeding is niet te berekenen omdat er geen startdatum te vinden is in de loonstrook.'
+    einddatum = vso_checks.get('EINDDATUM').value
+    if not einddatum:
+        return 'Transitievergoeding is niet te berekenen omdat er geen einddatum te vinden is in de vaststellingsovereenkomst.'
+    years, rest_months, months = calculate_months(startdatum, einddatum)
+
+    result = f'De dienstbetrekking liep van {format_date(startdatum)} tot {format_date(einddatum)}, dat is '
+    if years:
+        if rest_months:
+            result += f'{years} jaar en '
+        else:
+            result += f'precies {years} jaar. '
+    if rest_months:
+        result += f'{rest_months} maanden.'
+    bruto = ls_checks.get('BRUTO_MAANDSALARIS').value
+    vergoeding = round(months * bruto / 36, 2)
+    result += f'<br/>Het laatste bruto maandsalaris bedroeg € {format_float(bruto)}. '
+    result += f'<br/>De transitievergoeding bedraagt hiermee € {format_float(vergoeding)}.'
+    return result
+
+
+def calculate_months(startdatum: Day, einddatum: Day) -> (int, int, int):
+    years = einddatum.y - startdatum.y
+    rest_months = einddatum.m - startdatum.m
+    if rest_months < 0:
+        years -= 1
+        rest_months += 12
+    months = years * 12 + rest_months
+    return years, rest_months, months
+
+
+def format_date(day: Day) -> str:
+    maanden = ['', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober',
+               'november', 'december']
+    return f'{day.d} {maanden[day.m]} {day.y}'
+
+
+def format_float(f: float) -> str:
+    return f'{f:.2f}'.replace('.', ',')

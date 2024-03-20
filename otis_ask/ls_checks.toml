@@ -14,25 +14,25 @@ prompt = "De maand het het jaar van de salarisperiode van deze loonstrook"
 required = false
 
 [STARTDATUM]
-type = "datum"
+type = "day"
 description = "Datum indiensttreding"
 prompt = "de datum van indiensttreding"
 required = false
 
 [BRUTO_MAANDSALARIS]
-type= "getal"
+type= "float"
 description = "Bruto maandsalaris"
 prompt = "het bruto maandsalaris"
 required = false
 
 [GEBOORTEDATUM]
-type = "datum"
+type = "day"
 description = "Geboortedatum"
 prompt = "de geboortedatum"
 required = false
 
 [PARTTIME_PERCENTAGE]
-type = "getal"
+type = "int"
 description = "Parttime percentage"
 prompt = "het parttime percentage als een geheel getal"
 required = false

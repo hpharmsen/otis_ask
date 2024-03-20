@@ -14,7 +14,7 @@ prompt = "de functie van de werknemer"
 required = false
 
 [STARTDATUM]
-type = "datum"
+type = "day"
 description = "Datum indiensttreding"
 prompt = "de datum van indiensttreding"
 required = false
@@ -74,7 +74,7 @@ prompt = "waar werkgever en werknemer de overeenkomst hebben ondertekend"
 required = false
 
 [DATUM_ONDERTEKENING]
-type = "datum"
+type = "day"
 description = "Datum van ondertekening datum"
 prompt = "wanneer werkgever en werknemer de overeenkomst hebben ondertekend"
 required = false

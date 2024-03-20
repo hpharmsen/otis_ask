@@ -3,7 +3,7 @@ import os
 import sys
 
 from otis_ask import analyze_vso, check_document_type, analyze_ao
-from otis_ask.analysis import check_vso_with_ao, generate_advice, analyze_ls
+from otis_ask.analysis import check_vso_with_ao, generate_advice, analyze_ls, calculate_transitievergoeding
 from otis_ask.checks import Checks
 from otis_ask.output import color_print, print_response
 
@@ -55,6 +55,7 @@ if __name__ == "__main__":
         print_response(checks['vso'])
         print_response(checks['ao'])
         print_response(checks['ls'])
+
         combined_checks = Checks()
         extra_advice = ''
         if checks.get('vso') and checks.get('ao'):
@@ -63,3 +64,7 @@ if __name__ == "__main__":
             print_response(combined_checks)
         advice = generate_advice(checks, extra_advice)
         print(advice)
+
+    transitievergoeding = calculate_transitievergoeding(checks)
+    if transitievergoeding:
+        print(transitievergoeding)

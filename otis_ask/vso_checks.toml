@@ -19,6 +19,11 @@ prompt = "de naam van de werknemer"
 description = "Adres werknemer"
 prompt = "het adres van de werknemer"
 
+[STARTDATUM]
+type = "day"
+description = "Startdatum"
+prompt = "De startdatum van de dienstbetrekking"
+
 [SALARIS]
 description = "Salaris"
 prompt = "het salaris van de werknemer"
@@ -71,12 +76,12 @@ prompt = "dat als er een pensioenregeling is, deze tot het eind wordt nagekomen"
 required = false
 
 [EINDDATUM]
-type = "datum"
+type = "day"
 description = "Datum einde arbeidsovereenkomst"
 prompt = "de datum waarop de arbeidsovereenkomst eindigt"
 
 [EINDAFREKENING]
-type = "datum"
+type = "day"
 description = "Datum eindafrekening"
 prompt = "op welke datum werkgever een eindafrekening maakt"
 
@@ -90,6 +95,6 @@ description = "Plaats van ondertekening"
 prompt = "waar werkgever en werknemer de overeenkomst hebben ondertekend"
 
 [DATUM_ONDERTEKENING]
-type = "datum"
+type = "day"
 description = "Datum van ondertekening datum"
 prompt = "wanneer werkgever en werknemer de overeenkomst hebben ondertekend"
