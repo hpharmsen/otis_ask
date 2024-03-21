@@ -1,3 +1,4 @@
+import os
 import sys
 import io
 import mimetypes
@@ -5,8 +6,7 @@ import mimetypes
 import cv2
 import numpy as np
 from pdf2image import convert_from_path  # first: brew install poppler. For heroku: https://stackoverflow.com/questions/54739063/install-poppler-onto-heroku-server-django
-import \
-    pytesseract  # first: brew install tesseract; brew install tesseract-lang; ln /opt/homebrew/Cellar/tesseract/5.3.3/bin/tesseract /usr/local/bin/tesseract
+import pytesseract  # first: brew install tesseract; brew install tesseract-lang; ln /opt/homebrew/Cellar/tesseract/5.3.4/bin/tesseract /usr/local/bin/tesseract
 from PIL import Image
 from pypdf import PdfReader
 
@@ -54,6 +54,9 @@ def read_pdf(file_path, poppler_path=None):
         return text
 
     # Alternatively, OCR the PDF using pdf2image and pytesseract
+    local_tessdata_dir = '/opt/homebrew/Cellar/tesseract/5.3.4/share/tessdata'
+    if os.path.exists(local_tessdata_dir):
+        os.environ["TESSDATA_PREFIX"] = local_tessdata_dir
     images = convert_from_path(file_path, first_page=1, dpi=200, poppler_path=poppler_path)
     text = ""
     for image in images:

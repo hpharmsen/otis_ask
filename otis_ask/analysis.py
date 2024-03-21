@@ -28,6 +28,7 @@ def cached(func):
             with open('gpt_cache.pickle', 'wb') as outf:
                 pickle.dump(func.cache, outf)
             return result
+
     return wrapper
 
 
@@ -92,7 +93,7 @@ def process_response(response: str, checks: Checks) -> Checks:
             number, value = line, ''
         try:
             i = int(number)
-            check = checks[i-1]
+            check = checks[i - 1]
         except ValueError:
             print('Error: ', line)
             continue
@@ -129,7 +130,6 @@ def process_response(response: str, checks: Checks) -> Checks:
 
 
 def check_vso_with_ao(checks: ChecksDict) -> str:
-
     vso_checks = checks['vso']
     ao_checks = checks['ao']
     extra_checks = Checks()
@@ -142,16 +142,10 @@ def check_vso_with_ao(checks: ChecksDict) -> str:
     # 2 maanden als de werknemer 5 jaar of langer in dienst is,
     # 1 maand als de werknemer korter dan 5 jaar in dienst is.
     # Einddatum moet dus minimaal zoveel maanden veder liggen dan de opzegdatum
-    def try_to_make_day_type(value):
-        # When coming back from the frontend, dates are strings
-        try:
-            return Day(value)
-        except TypeError:
-            return value
 
-    datum_ondertekening = try_to_make_day_type(vso_checks.get('DATUM_ONDERTEKENING').value)
-    einddatum = try_to_make_day_type(vso_checks.get('EINDDATUM').value)
-    startdatum = try_to_make_day_type(ao_checks.get('STARTDATUM').value)
+    datum_ondertekening = vso_checks.get('DATUM_ONDERTEKENING').value
+    einddatum = vso_checks.get('EINDDATUM').value
+    startdatum = ao_checks.get('STARTDATUM').value
 
     opzegtermijn_str = ''
     if type(datum_ondertekening) is type(einddatum) is type(startdatum) is Day:
@@ -265,6 +259,7 @@ def calculate_transitievergoeding(checks: ChecksDict) -> str:
         startdatum = vso_checks.get('STARTDATUM').value
     if not startdatum:
         return 'Transitievergoeding is niet te berekenen omdat er geen startdatum te vinden is in de loonstrook.'
+
     einddatum = vso_checks.get('EINDDATUM').value
     if not einddatum:
         return 'Transitievergoeding is niet te berekenen omdat er geen einddatum te vinden is in de vaststellingsovereenkomst.'
