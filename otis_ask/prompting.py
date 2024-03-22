@@ -55,4 +55,4 @@ def str_combine(items: list, sep: str):
         return ''
     if len(items) == 1:
         return str(items[0])
-    return ",".join([str(item) for item in items[:-1]]) + " " + sep + " " + str(items[-1])
+    return ", ".join([str(item) for item in items[:-1]]) + " " + sep + " " + str(items[-1])

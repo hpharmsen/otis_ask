@@ -15,6 +15,7 @@ class Check:
     check_type: type
     options: list[str]
     required: bool = True
+    texts: dict = None
     passed: bool = False
     value: str = ""
 
@@ -31,8 +32,9 @@ class Check:
         else:
             check_type = 'str'
             value = self.value
-        return {'id': self.id, 'description': self.description, 'prompt': self.prompt, 'check_type': check_type,
-                'options': self.options, 'required': self.required, 'passed': self.passed, 'value': value}
+        return {'id': self.id, 'description': self.description, 'prompt': self.prompt,
+                'check_type': check_type, 'options': self.options, 'required': self.required,
+                'passed': self.passed, 'value': value, 'texts': self.texts}
 
 
 class Checks:
@@ -69,7 +71,8 @@ class Checks:
                     check_type = str
             options = item.get('options', [])
             required = item.get('required', True)
-            self.checks += [Check(check_id, name, prompt, check_type, options, required)]
+            texts = {key[5:].replace('_', ' '): value for key, value in item.items() if key.startswith('text_')}
+            self.checks += [Check(check_id, name, prompt, check_type, options, required, texts)]
 
         return self.checks
 
@@ -96,7 +99,7 @@ class Checks:
         self.checks = []
         for item in data:
             check = Check(item['id'], item['description'], item['prompt'], item['check_type'], item['options'],
-                          item['required'], item['passed'], item['value'])
+                          item['required'], item['passed'], item['value'], item['texts'])
             self.checks += [check]
         return self.checks
 

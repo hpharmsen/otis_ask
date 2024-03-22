@@ -29,6 +29,9 @@ def print_response(checks: Checks):
         color_print(f"{check.description}", GRAY, end="")
         if value:
             color_print(": ", GRAY, end="")
-            color_print(value, BLUE)
+            if value in check.texts:
+                color_print(check.texts[value], BLUE)
+            else:
+                color_print(value, BLUE)
         else:
             print()

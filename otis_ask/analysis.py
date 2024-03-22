@@ -32,7 +32,6 @@ def cached(func):
     return wrapper
 
 
-@cached
 def doprompt(prompt: str) -> str:
     gpt = Agent(MODEL)
     gpt.temperature = 0
