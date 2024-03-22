@@ -7,34 +7,51 @@ from typing import TypeAlias
 from justdays import Day
 
 
-@dataclass
 class Check:
-    id: str
-    description: str
-    prompt: str
-    check_type: type
-    options: list[str]
-    required: bool = True
-    texts: dict = None
-    passed: bool = False
-    value: str = ""
+    def __init__(self, check_id: str, description: str, prompt: str, check_type: type, options: list[str],
+                 required: bool=True, texts: dict=None, passed: bool=False, value: [str, float, int, Day]=None):
+        self.id = check_id
+        self.description = description
+        self.prompt = prompt
+        self.check_type = check_type
+        self.options = options
+        self.required = required
+        self.texts = texts
+        self.passed = passed
+        self.value = value
+        assert type(self.check_type) == type
+        assert self.value is None or self.check_type != Day or type(self.value) == Day
+
+    @classmethod
+    def deserialize(cls, item):
+        if item['check_type'] == 'date':
+            value = Day(item['value'])
+            check_type = Day
+        elif item['check_type'] == 'float':
+            value = float(item['value'])
+            check_type = float
+        elif item['check_type'] == int:
+            value = int(item['value'])
+            check_type = int
+        else:
+            value = item['value']
+            check_type = str
+
+        return cls(item['id'], item['description'], item['prompt'], check_type, item['options'],
+                   item['required'], item['texts'], item['passed'], value)
 
     def serializable(self):
         if self.check_type == Day:
             check_type = 'date'
-            value = str(self.value)
         elif self.check_type == float:
             check_type = 'float'
-            value = self.value
         elif self.check_type == int:
             check_type = 'int'
-            value = self.value
         else:
             check_type = 'str'
-            value = self.value
         return {'id': self.id, 'description': self.description, 'prompt': self.prompt,
                 'check_type': check_type, 'options': self.options, 'required': self.required,
-                'passed': self.passed, 'value': value, 'texts': self.texts}
+                'passed': self.passed, 'value': str(self.value), 'texts': self.texts}
 
 
 class Checks:
@@ -96,11 +113,7 @@ class Checks:
 
     def deserialize(self, json_str):
         data = json.loads(json_str)
-        self.checks = []
-        for item in data:
-            check = Check(item['id'], item['description'], item['prompt'], item['check_type'], item['options'],
-                          item['required'], item['passed'], item['value'], item['texts'])
-            self.checks += [check]
+        self.checks = [Check.deserialize(item) for item in data]
         return self.checks
 
 
