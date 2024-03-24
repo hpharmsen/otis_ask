@@ -68,21 +68,21 @@ options = ["vervallen", "niet vervallen", "niet van toepassing"]
 description = "Relatiebeding"
 prompt = "dat het relatiebeding vervalt, niet vervalt of niet van toepassing is"
 required = false
-text_niet_van_toepassing = "is voor zover bekend niet van toepassing want dat is in de arbeidsovereenkomst niet schriftelijk afgesproken."
+text_niet_van_toepassing = "onbekend"
 
 [CONCURRENTIEBEDING]
 options = ["vervallen", "niet vervallen", "niet van toepassing"]
 description = "Concurrentiebeding"
 prompt = "dat het concurrentiebeding vervalt, niet vervalt of niet van toepassing is"
 required = false
-text_niet_van_toepassing = "in de vaststellingsovereenkomst staat niet opgenomen dat het concurrentiebeding komt te vervallen."
+text_niet_van_toepassing = "onbekend"
 
 [PENSIOENREGELING]
 options = ["ja", "nee", "niet van toepassing"]
 description = "Pensioenregeling"
 prompt = "dat als er een pensioenregeling is, deze tot het eind wordt nagekomen"
 required = false
-text_niet_van_toepassing = "is voor zover bekend niet van toepassing want dat is in de arbeidsovereenkomst niet schriftelijk afgesproken."
+text_niet_van_toepassing = "onbekend"
 
 [EINDDATUM]
 type = "day"

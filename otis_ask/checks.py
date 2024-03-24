@@ -25,13 +25,13 @@ class Check:
     @classmethod
     def deserialize(cls, item):
         if item['check_type'] == 'date':
-            value = Day(item['value'])
+            value = Day(item['value']) if item['value'] else None
             check_type = Day
         elif item['check_type'] == 'float':
-            value = float(item['value'])
+            value = float(item['value']) if item['value'] else None
             check_type = float
         elif item['check_type'] == int:
-            value = int(item['value'])
+            value = int(item['value']) if item['value'] else None
             check_type = int
         else:
             value = item['value']
@@ -43,15 +43,19 @@ class Check:
     def serializable(self):
         if self.check_type == Day:
             check_type = 'date'
+            value = str(self.value) if self.value else ''
         elif self.check_type == float:
             check_type = 'float'
+            value = str(self.value) if self.value is not None else ''
         elif self.check_type == int:
             check_type = 'int'
+            value = str(self.value) if self.value is not None else ''
         else:
             check_type = 'str'
+            value = self.value
         return {'id': self.id, 'description': self.description, 'prompt': self.prompt,
                 'check_type': check_type, 'options': self.options, 'required': self.required,
-                'passed': self.passed, 'value': str(self.value), 'texts': self.texts}
+                'passed': self.passed, 'value': value, 'texts': self.texts}
 
 
 class Checks:

@@ -42,21 +42,21 @@ def analyze_vso(text: str, checks):
     """VSO has been uploaded AO might or might not be present.
     Create new (empty) vso_checks and analyze together with ao_checks"""
     checks['vso'] = Checks('vso_checks.toml')
-    analyze_document("vso", text, checks)
+    return analyze_document("vso", text, checks)
 
 
 def analyze_ao(text: str, checks):
     """AO has been uploaded VSO might or might not be present.
     Create new (empty) ao_checks and analyze together with vso_checks"""
     checks['ao'] = Checks('ao_checks.toml')
-    analyze_document("ao", text, checks)
+    return analyze_document("ao", text, checks)
 
 
 def analyze_ls(text: str, checks: ChecksDict):
     """LS has been uploaded
     Create new (empty) ls_checks and analyze"""
     checks['ls'] = Checks('ls_checks.toml')
-    analyze_document("ls", text, checks)
+    return analyze_document("ls", text, checks)
 
 
 def check_document_type(document_text: str) -> str:
@@ -79,6 +79,7 @@ def analyze_document(document_type: str, document_text: str, checks: ChecksDict)
     print(prompt)
     response = doprompt(prompt)
     process_response(response, current_checks)  # Fill in value and passed fields in checks
+    return prompt, response  # For debugging purposes
 
 
 def process_response(response: str, checks: Checks) -> Checks:
@@ -257,14 +258,14 @@ def calculate_transitievergoeding(checks: ChecksDict) -> str:
     if vso_checks.get('STARTDATUM').value and vso_checks.get('STARTDATUM').value < startdatum:
         startdatum = vso_checks.get('STARTDATUM').value
     if not startdatum:
-        return 'Transitievergoeding is niet te berekenen omdat er geen startdatum te vinden is in de loonstrook.'
+        return '<p>Transitievergoeding is niet te berekenen omdat er geen startdatum te vinden is in de loonstrook.</p>'
 
     einddatum = vso_checks.get('EINDDATUM').value
     if not einddatum:
-        return 'Transitievergoeding is niet te berekenen omdat er geen einddatum te vinden is in de vaststellingsovereenkomst.'
+        return '<p>Transitievergoeding is niet te berekenen omdat er geen einddatum te vinden is in de vaststellingsovereenkomst.</p>'
     years, rest_months, months = calculate_months(startdatum, einddatum)
 
-    result = f'De dienstbetrekking liep van {format_date(startdatum)} tot {format_date(einddatum)}, dat is '
+    result = f'<p>De dienstbetrekking liep van {format_date(startdatum)} tot {format_date(einddatum)}, dat is '
     if years:
         if rest_months:
             result += f'{years} jaar en '
@@ -272,10 +273,41 @@ def calculate_transitievergoeding(checks: ChecksDict) -> str:
             result += f'precies {years} jaar. '
     if rest_months:
         result += f'{rest_months} maanden.'
+    result += '</p>'
+
     bruto = ls_checks.get('BRUTO_MAANDSALARIS').value
     vergoeding = round(months * bruto / 36, 2)
-    result += f'<br/>Het laatste bruto maandsalaris bedroeg € {format_float(bruto)}. '
-    result += f'<br/>De transitievergoeding bedraagt hiermee € {format_float(vergoeding)}.'
+    result += f'<p>Het laatste bruto maandsalaris bedroeg € {format_float(bruto)}.</p>'
+
+    result += '<p>'
+    # Berekenen van het maximum
+    themax = 94_000
+    themax_year = 2024
+    jaarbruto = bruto * 12
+    if jaarbruto > themax:
+        if vergoeding > jaarbruto:
+            vergoeding = jaarbruto
+            result += f'De transitievergoeding wordt beperkt door het wettelijk maximum van 1 bruto jaarsalaris.'
+    else:
+        if vergoeding > themax:
+            vergoeding = themax
+            result += f'De transitievergoeding is in dit geval gelijk aan het wettelijk maximum in {themax_year}.'
+
+    result += f'<br/>De transitievergoeding bedraagt hiermee <b>€ {format_float(vergoeding)}</b>.</p>'
+
+    result += f'''<p><i>Op grond van de wet heeft een werknemer van rechtswege aanspraak op de transitievergoeding
+        indien de arbeidsovereenkomst door de werkgever wordt beëindigd. Strikt genomen heeft een werknemer dus geen 
+        wettelijke recht op de transitievergoeding indien een vaststellingsovereenkomst wordt gesloten, maar het geeft 
+        partijen - ook bij het sluiten van een vso - wel enige handvatten, en de transitievergoeding kan dan ook als 
+        minimaal uitgangspunt worden genomen als start voor eventuele onderhandelingen. Op basis van de door de 
+        geüploade stukken, bedraagt de bruto transitievergoeding € {format_float(vergoeding)}. Dit bedrag kan hoger 
+        uitvallen, aangezien het ‘loon’ kan worden vermeerderd (indien dat het geval is) met:<ul>
+
+        <li>de vakantiebijslag (vaak 8%) en de vaste eindejaarsuitkering per jaar gedeeld door 12;</li>
+        <li>de in de voorafgaande 12 maanden gemiddeld per maand ontvangen ‘vaste looncomponenten’; 
+            zoals overwerkvergoeding en ploegentoeslag;</li>
+        <li>de in de voorafgaande drie kalenderjaren gemiddeld per maand ontvangen ‘variabele looncomponenten’, 
+        zoals bonussen, winstuitkeringen en variabele eindejaarsuitkeringen.</li></ul></p>'''
     return result
 
 

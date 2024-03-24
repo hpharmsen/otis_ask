@@ -77,7 +77,14 @@ def read_pdf_with_pypdf(path_or_data):
 
 def read_docx(file_path):
     import docx2txt
-    return docx2txt.process(file_path)
+    text = docx2txt.process(file_path)
+    if isinstance(text, bytes):
+        text = text.decode('utf-8')
+    text = text.replace('\u201c', '"')  # Linker dubbele aanhalingstekens
+    text = text.replace('\u201d', '"')  # Rechter dubbele aanhalingstekens
+    text = text.replace('\u2018', "'")  # Linker enkele aanhalingstekens
+    text = text.replace('\u2019', "'")  # Rechter enkele aanhalingstekens
+    return text
 
 
 if __name__ == "__main__":
